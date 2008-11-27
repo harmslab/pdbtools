@@ -1,0 +1,26 @@
+Solvent-Accessibility-modified Tanford-Kirkwood calculations are an attempt to 
+calculate electrostatic potentials and pKa values of ionizable groups in a 
+macromolecule.  All interactions are simulated as occuring between charges at
+(or near) the surface of a sphere of low dielectric constant (Dint) embedded in 
+a medium of high dielectric constant (Dext).  The sphere is defined by radius 
+"a" and a radius from which ions are excluded "b" (usually a + 2 angstroms).  
+Charges are buried depth "d" below the surface of the sphere.  Electrostatic 
+potentials between charges at different angular separations in the sphere are
+calculated using an analytical solution to the Poisson equation (Tanford &
+Kirkwood, (1957), JACS, 79(20):5333-5339). 
+
+This program adds an empirical correction that improves agreement between 
+experimental and computed pKa value: each electrostatic potential is weighted 
+by (1 - average(sa_i,sa_j)) where sa_i and sa_j are the solvent accessibilities
+of group i and j.  The work is described in detail in: Matthew JB, Gurd FR,
+Garcia-Moreno B, Flanagan MA, March KL, Shire SJ. "pH-dependent processes in
+proteins." CRC Crit Rev Biochem. 1985;18(2):91-197.
+
+-------------------------------------------------------------------------------
+Compiling
+-------------------------------------------------------------------------------
+
+The fortran programs in this directory were written in 1988 by Bertrand Garcia-
+Moreno E.  To compile them, alter the F77 variable in "Makefile" to point to a
+valid fortran compiler binary.  Then run "make" in this directory.  This has
+been tested using the gnu compilers.
