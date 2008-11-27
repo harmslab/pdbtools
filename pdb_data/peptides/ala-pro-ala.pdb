@@ -1,0 +1,26 @@
+COMPND    BLOCKED PEPTIDE IN EXTENDED FORM                                      
+REMARK    PRO MODELED IN PII FORM (-79, -149)
+SEQRES   1      5  ACE ALA PRO ALA NME                                
+ATOM      1  CH3 ACE     1       1.000   0.000   0.000
+ATOM      2  C   ACE     1       1.520   1.428   0.000
+ATOM      3  O   ACE     1       0.737   2.378   0.000
+ATOM      4  N   ALA     2       2.841   1.572   0.000
+ATOM      5  CA  ALA     2       3.469   2.888   0.000
+ATOM      6  C   ALA     2       4.989   2.773   0.000
+ATOM      7  O   ALA     2       5.539   1.672   0.000
+ATOM      8  CB  ALA     2       3.015   3.692   1.209
+ATOM     10  N   PRO     3       5.703   3.911   0.000
+ATOM     11  CA  PRO     3       7.157   3.947   0.000
+ATOM     12  C   PRO     3       7.732   3.665   1.390
+ATOM     13  O   PRO     3       7.139   2.926   2.174
+ATOM     14  CB  PRO     3       7.516   5.361  -0.467
+ATOM     15  CG  PRO     3       6.334   6.207   0.006
+ATOM     16  CD  PRO     3       5.149   5.250  -0.123
+ATOM     17  N   ALA     4       8.885   4.260   1.680
+ATOM     18  CA  ALA     4       9.540   4.075   2.969
+ATOM     19  C   ALA     4      10.843   4.864   3.044
+ATOM     20  O   ALA     4      11.222   5.546   2.092
+ATOM     21  CB  ALA     4       9.819   2.601   3.216
+ATOM     23  N   NME     5      11.523   4.767   4.181
+ATOM     24  CH3 NME     5      12.784   5.471   4.383
+TER
