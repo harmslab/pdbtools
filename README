@@ -1,0 +1,80 @@
+                                pdb-tools
+                               Release 0.1
+                             April 22,  2008
+
+pdb-tools is a set of python scripts that manipulate wwPDB macromolecule
+structure files.  There are many programs, both open source and proprietary,
+that perform similar tasks; however, most of these tools are buried within
+programs of larger functionality.  Thus, relatively simple calculations often
+involve learning a new program, compiling modules, and installing libraries. To
+fill a niche (and get the tasks done that I needed done), I started writing my
+own toolset.  This has evolved into the pdb-tools suite.  The suite of programs
+is characterized by the following philosophy:
+
+    1) Each program should run as a stand-alone application with a standard,
+       GNU/POSIX style command line interface.
+    2) Each program should be written in such a way to allow it to be used
+       as a library of functions for more complex programs.  
+    3) Programs should require a minimum of external dependencies.  (Thus, 
+       Python's builtin list types are used over the faster, albiet "external"
+       array types).
+
+Most of the scripts will run "out of the box" using a python interpreter.  The
+command line parser is designed to be flexible.  It will take an arbitarily 
+long list of pdb files, pdb ids, text files with pdb ids, or some mixture of
+all three.  If the pdb file or id is not in the working directory, scripts will
+attempt to download the pdb file from RCSB (http://www.rcsb.org/).  Available
+options for each script can be accessed by typing pdb_XXXX.py --help.
+
+Depending on the type of operation being done, a program will either write 
+output files in the working directory or will print to stdout.  This can be
+caught with a ">" redirect and placed in a file.  All structure outputs are
+written in standard pdb format.  All data outputs are in fixed-width column 
+format.  They were designed to be read by the statistics package R 
+(http://cran.r-project.org/); however, they should be easily parsed by other
+graphing programs.
+
+-------------------------------------------------------------------------------
+External dependencies:
+-------------------------------------------------------------------------------
+
+Several of the programs in this suite are designed as interfaces to other,
+more complicated, programs that must be downloaded and installed separately.  
+These programs need only be installed if the scripts listed below are needed:
+
+CHARMM (http://www.charmm.org/) 
+    pdb_addH.py
+    pdb_clean.py
+    pdb_mutator.py
+    charmm/interface.py
+    charmm/gen_input.py
+To use CHARMM with pdb-tools, define the environment variable $CHARMM to point
+to the directory containing the charmm binary, and $CHARMM_LIB to point to the
+directory with the CHARMM topology and parameter files.
+
+DSSP (http://swift.cmbi.ru.nl/gv/dssp/)
+    pdb_dssp.py
+
+NACCESS (http://www.bioinf.manchester.ac.uk/naccess/)
+    pdb_sasa.py
+
+For both of these programs, simply make sure that dssp and naccess are in the
+path.
+
+pdb_satk.py requires the user to compile the fortran programs in the satk
+directory.  This can be done by editing the satk/Makefile to point to a valid
+fortran compiler, then running "make" in the satk directory.  This has been 
+tested using the g77 compilers.  For more information on the programs, see the
+README file in the satk directory.
+
+-------------------------------------------------------------------------------
+Using independent scripts as libraries:
+-------------------------------------------------------------------------------
+
+Each program is written with a main() function that parses the command line and
+cycles through a list of pdb files.  This then calls a function that is named
+in the same way as the script itself: the script pdb_test.py would have a 
+function pdbTest.  This function is the core of the script.  It can be called 
+from another script, requring only to be passed a list of lines from a pdb file
+and any other arguments/options specified in that function definition.
+
