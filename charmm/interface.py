@@ -100,7 +100,7 @@ def charmm2pdb(charmm_output):
 
 
 def charmmWash(input_structures,calc_type="single",keep_temp=False,
-               hbond=None):
+               hbond=None,fix_atoms=True,num_steps=500):
     """
     Wash a structure through CHARMM, adding polar hydrogens and missing heavy
     atoms.
@@ -111,6 +111,10 @@ def charmmWash(input_structures,calc_type="single",keep_temp=False,
             n_terminus and c_terminus are boolean
         calc_type = type of hydrogen minimization to do
         keep_temp = whether or not to keep temporary files.
+        hbond = file to write out hbonds to.  (If hbonds are calculated, the
+            structure changes...)
+        fix_atoms = whether or not to fix atoms that were in the original
+            file.
     """
        
     # Convert all structures in input_structures to charmm-readable files
@@ -137,7 +141,9 @@ def charmmWash(input_structures,calc_type="single",keep_temp=False,
         raise CharmmInterfaceError(err)
  
     # Create CHARMM
-    input = gen_input.createCharmmFile(struct_input,calc_type,hbond)
+    input = gen_input.createCharmmFile(struct_input,calc_type,hbond,
+                                       fix_atoms=fix_atoms,
+                                       num_steps=num_steps)
     
     # Run CHARMM
     charmm_out = runCharmm(input)

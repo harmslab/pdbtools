@@ -183,7 +183,7 @@ def writeHbonds(filename):
     return "".join(out)
 
 
-def minimizeSingle(steps):
+def minimizeSingle(steps,fix_atoms=True):
     """
     Generates CHARMM code to minimize a structure with $steps number of steps.
     """
@@ -193,13 +193,16 @@ def minimizeSingle(steps):
     out.append("! Minimize non-fixed atoms with %s steps.\n\n" % steps)
 
     # Minimize
-    out.append("cons fix sele fixed end\n")
-    out.append("mini sd nstep %s\n" % steps)
-    out.append("cons fix sele none end\n\n")
+    if fix_atoms:
+        out.append("cons fix sele fixed end\n")
+        out.append("mini sd nstep %s\n" % steps)
+        out.append("cons fix sele none end\n\n")
+    else:
+        out.append("mini sd nstep %s\n" % steps)
 
     return "".join(out)
 
-def minimizeFull(steps):
+def minimizeFull(steps,fix_atoms=True):
     """
     Generates CHARMM code to minimize a structure; used for full-site
     calculation.
@@ -213,8 +216,9 @@ def minimizeFull(steps):
     out.append("! Minimize non-fixed atoms with %s steps.\n\n" % steps)
 
     # Create output.
-    #out.append("cons fix sele fixed end\n")
-    out.append("cons fix sele .not. type H* end\n")
+    if fix_atoms:
+        out.append("cons fix sele .not. type H* end\n")
+
     out.append("mini sd -\n")
     out.append("nste %i npri %i tolg %.3F step %.3F tols % 0.3F -\n" %
                (steps,m["NPRI"],m["TOLG"],m["STEP"],m["TOLS"]))
@@ -222,7 +226,9 @@ def minimizeFull(steps):
                (m["TOLENR"],m["INBFRQ"],m["CUTNB"],m["CTOFNB"]))
     out.append("ctonnb %.2F vswitch switch cdie eps %.1F\n" % (m["CTONNB"],
                                                                m["EPS"]))
-    out.append("\ncons fix sele none end\n\n")
+
+    if fix_atoms:
+        out.append("\ncons fix sele none end\n\n")
 
     return "".join(out)
 
@@ -245,7 +251,7 @@ def writeCoord(output_file):
 
 
 def createCharmmFile(pdb_files,calc_type="single",hbond=None,num_steps=500,
-                     coord_out="out.cor"):
+                     coord_out="out.cor",fix_atoms=True):
     """
     Generate a charmm input file to add hyrogens to structure.
     """
@@ -299,7 +305,7 @@ def createCharmmFile(pdb_files,calc_type="single",hbond=None,num_steps=500,
         out.append(writeHbonds(hbond))
 
     # Perform minization (single or full)
-    out.append(minimize(num_steps))
+    out.append(minimize(num_steps,fix_atoms))
 
     # Write to file
     out.append(writeCoord(coord_out))

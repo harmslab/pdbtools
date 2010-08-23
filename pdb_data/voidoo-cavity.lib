@@ -1,0 +1,282 @@
+REMA
+REMA *************************************************************
+REMA
+REMA cavity.lib - library of Vanderwaals radii and residue types
+REMA              used by program VOIDOO
+REMA
+REMA v. 0.1 - Gerard Kleijwegt @ 920810
+REMA v. 0.2 - Gerard Kleijwegt @ 920811 - added residue types
+REMA                                    - added atom type 'TEST'
+REMA v. 0.3 - Gerard Kleijwegt @ 920812 - used AMBER values where
+REMA          available (united atoms, i.e., hydrogens implied)
+REMA v. 0.4 - Gerard Kleijwegt @ 920814 - implemented specific
+REMA          residue/atom name combinations
+REMA                                    - used proper AMBER values
+REMA v. 0.5 - GK @ 940729 - added radii elements 1 - 54 in remark
+REMA v. 0.6 - GK @ 950608 - added some more protein residue types
+REMA v. 0.7 - GK @ 991109 - added ELEM cards for 1H, 2H, 3H, SE,
+REMA                        and residue types for Se-Met and Se-Cys
+REMA v. 0.8 - GK @ 991123 - included DNA (thanks to Hector Viadiu
+REMA                        <viadiu@inka.MSSM.EDU> !)
+REMA v. 0.9 - GK @ 020829 - added CSO (oxidised Cys with -S-OH)
+REMA v. 1.0 - GK @ 030312 - added several residues
+REMA                        (modified AAs, synonyms, URI/U)
+REMA
+REMA *************************************************************
+REMA
+REMA AMBER reference: SJ Weiner et al., JACS 106, 765-784 (1984)
+REMA
+REMA *************************************************************
+REMA
+REMA *** elements *** TWO characters; RIGHT justified
+REMA
+ELEM ' N' 1.75
+ELEM ' C' 1.85  NOTE: all Cs are 1.85 in AMBER, except CH2/CH3
+ELEM ' O' 1.60
+ELEM ' S' 2.00
+ELEM ' H' 1.00
+ELEM '1H' 1.00
+ELEM '2H' 1.00
+ELEM '3H' 1.00
+ELEM ' P' 2.10
+ELEM 'SE' 2.20  NOTE: pure guess !!!
+REMA
+ELEM 'NA' 0.95
+ELEM 'MG' 0.65
+ELEM 'CL' 1.80
+ELEM 'CA' 1.00
+ELEM 'MN' 1.10
+ELEM 'FE' 1.10
+ELEM 'ZN' 1.20
+ELEM 'CD' 1.20
+REMA
+REMA The following van der Waals radii were reported for elements 1 - 54
+REMA by Joe Leonard (jle@world.std.com) on the Internet at 940729
+REMA (they look like atomic radii, NOT ionic !!!):
+REMA  
+REMA  1.20,                              1.40,
+REMA  1.82,1.78,1.74,1.70,1.55,1.52,1.47,1.54,
+REMA  2.27,2.22,2.16,2.10,1.80,1.80,1.75,1.88,2.75,2.57,
+REMA  2.56,2.54,2.52,2.50,2.48,2.46,2.44,2.42,2.41,2.40,
+REMA  2.40,2.10,1.85,1.90,1.85,2.02,3.10,2.80,
+REMA  2.77,2.74,2.71,2.68,2.65,2.62,2.59,2.56,2.53,2.51,
+REMA  2.50,2.20,2.10,2.06,1.98,2.16
+REMA 
+REMA *************************************************************
+REMA
+REMA *** atom types *** FOUR characters; element is first TWO
+REMA
+ATOM ' NZ ' 1.85   NOTE: occurs only in Lys
+REMA
+REMA *************************************************************
+REMA
+REMA *** residue/atom combinations *** EIGHT chracaters: RRR*AAAA
+REMA first three=residue, four=anything, five-eight=atom name
+REMA
+REMA OH = 1.65
+REMA
+SPAT 'TYR* OH ' 1.65
+SPAT 'THR* OG1' 1.65
+SPAT 'CSO* OD ' 1.65
+REMA
+REMA CH2 = 1.925
+REMA
+SPAT 'SER* CB ' 1.925
+SPAT 'ASN* CB ' 1.925
+SPAT 'GLN* CB ' 1.925
+SPAT 'GLN* CG ' 1.925
+SPAT 'LEU* CB ' 1.925
+SPAT 'ARG* CB ' 1.925
+SPAT 'ARG* CG ' 1.925
+SPAT 'ARG* CD ' 1.925
+SPAT 'ILE* CG1' 1.925
+SPAT 'PHE* CB ' 1.925
+SPAT 'TYR* CB ' 1.925
+SPAT 'CYS* CB ' 1.925
+SPAT 'MET* CB ' 1.925
+SPAT 'MET* CG ' 1.925
+SPAT 'HIS* CB ' 1.925
+SPAT 'GLU* CB ' 1.925
+SPAT 'GLU* CG ' 1.925
+SPAT 'ASP* CB ' 1.925
+SPAT 'TRP* CB ' 1.925
+SPAT 'LYS* CB ' 1.925
+SPAT 'LYS* CG ' 1.925
+SPAT 'LYS* CD ' 1.925
+SPAT 'LYS* CE ' 1.925
+SPAT 'PRO* CB ' 1.925
+SPAT 'PRO* CG ' 1.925
+SPAT 'PRO* CD ' 1.925
+REMA
+REMA CH3 = 2.00
+REMA
+SPAT 'ALA* CB ' 2.00
+SPAT 'THR* CG2' 2.00
+SPAT 'LEU* CD1' 2.00
+SPAT 'LEU* CD2' 2.00
+SPAT 'ILE* CG2' 2.00
+SPAT 'ILE* CD1' 2.00
+SPAT 'VAL* CG1' 2.00
+SPAT 'VAL* CG2' 2.00
+SPAT 'MET* CE ' 2.00
+REMA
+REMA *************************************************************
+REMA
+REMA Van der Waals radii for atoms in DNA bases
+REMA
+REMA Contributed by: Hector Viadiu <viadiu@inka.MSSM.EDU>
+REMA
+SPAT 'THY O5*' 1.60
+SPAT 'THY N1 ' 1.75
+SPAT 'THY C6 ' 1.85
+SPAT 'THY C2 ' 1.85
+SPAT 'THY O2 ' 1.60
+SPAT 'THY N3 ' 1.75
+SPAT 'THY C4 ' 1.85
+SPAT 'THY O4 ' 1.60
+SPAT 'THY C5 ' 1.85
+SPAT 'THY C5A' 2.00
+SPAT 'THY C2*' 1.85
+SPAT 'THY C5*' 1.925
+SPAT 'THY C4*' 1.85
+SPAT 'THY O4*' 1.60
+SPAT 'THY C1*' 1.85
+SPAT 'THY C3*' 1.85
+SPAT 'THY O3*' 1.60
+REMA
+SPAT 'GUA P  ' 2.10
+SPAT 'GUA O1P' 1.60
+SPAT 'GUA O2P' 1.60
+SPAT 'GUA O5*' 1.60
+SPAT 'GUA N9 ' 1.75
+SPAT 'GUA C4 ' 1.85
+SPAT 'GUA N3 ' 1.75
+SPAT 'GUA C2 ' 1.85
+SPAT 'GUA N2 ' 1.75 NOTE: Larger?
+SPAT 'GUA N1 ' 1.75
+SPAT 'GUA C6 ' 1.85
+SPAT 'GUA O6 ' 1.60
+SPAT 'GUA C5 ' 1.85
+SPAT 'GUA N7 ' 1.75
+SPAT 'GUA C8 ' 1.85
+SPAT 'GUA C2*' 1.85
+SPAT 'GUA C5*' 1.925
+SPAT 'GUA C4*' 1.85
+SPAT 'GUA O4*' 1.60
+SPAT 'GUA C1*' 1.85
+SPAT 'GUA C3*' 1.85
+SPAT 'GUA O3*' 1.60
+REMA
+SPAT 'ADE P  ' 2.10
+SPAT 'ADE O1P' 1.60
+SPAT 'ADE O2P' 1.60
+SPAT 'ADE O5*' 1.60
+SPAT 'ADE N9 ' 1.75
+SPAT 'ADE C4 ' 1.85
+SPAT 'ADE N3 ' 1.75
+SPAT 'ADE C2 ' 1.85
+SPAT 'ADE N1 ' 1.75
+SPAT 'ADE C6 ' 1.85
+SPAT 'ADE N6 ' 1.75 NOTE: Larger?
+SPAT 'ADE C5 ' 1.85
+SPAT 'ADE N7 ' 1.75
+SPAT 'ADE C8 ' 1.85
+SPAT 'ADE C2*' 1.85
+SPAT 'ADE C5*' 1.925
+SPAT 'ADE C4*' 1.85
+SPAT 'ADE O4*' 1.60
+SPAT 'ADE C1*' 1.85
+SPAT 'ADE C3*' 1.85
+SPAT 'ADE O3*' 1.60
+REMA
+SPAT 'CYT P  ' 2.10
+SPAT 'CYT O1P' 1.60
+SPAT 'CYT O2P' 1.60
+SPAT 'CYT O5*' 1.60
+SPAT 'CYT N1 ' 1.75
+SPAT 'CYT C6 ' 1.85
+SPAT 'CYT C2 ' 1.85
+SPAT 'CYT O2 ' 1.60
+SPAT 'CYT N3 ' 1.75
+SPAT 'CYT C4 ' 1.85
+SPAT 'CYT N4 ' 1.75
+SPAT 'CYT C5 ' 1.85
+SPAT 'CYT C2*' 1.85
+SPAT 'CYT C5*' 1.925
+SPAT 'CYT C4*' 1.85
+SPAT 'CYT O4*' 1.60
+SPAT 'CYT C1*' 1.85
+SPAT 'CYT C3*' 1.85
+SPAT 'CYT O3*' 1.60
+REMA
+REMA *************************************************************
+REMA
+REMA atom type 'TEST' is used for testing the accuracy and
+REMA precision of the volume calculations
+REMA
+ATOM 'TEST' 1.00
+REMA
+REMA *************************************************************
+REMA
+REMA *** allowed residue types ***
+REMA
+RESI 'ALA'
+RESI 'ARG'
+RESI 'ASN'
+RESI 'ASP'
+RESI 'CYS'
+RESI 'GLN'
+RESI 'GLU'
+RESI 'GLY'
+RESI 'HIS'
+RESI 'ILE'
+RESI 'LEU'
+RESI 'LYS'
+RESI 'MET'
+RESI 'PHE'
+RESI 'PRO'
+RESI 'SER'
+RESI 'THR'
+RESI 'TRP'
+RESI 'TYR'
+RESI 'VAL'
+REMA
+REMA the following amino-acid residues are not in the "top 20" :-)
+REMA or they are synonyms for one of the common ones
+REMA
+RESI 'CPR' ! cis-proline
+RESI 'CSS' ! disulfide
+RESI 'CSH' ! cysteine
+RESI 'CYH' ! cysteine
+RESI 'CYX' ! cysteine
+RESI 'ILU' ! isoleucine
+RESI 'PYR' ! pyroglutamate
+RESI 'PCA' ! pyroglutamate
+RESI 'PGA' ! pyroglutamate
+RESI 'HPR' ! hydroxy-proline
+RESI 'MSE' ! seleno-methionine
+RESI 'CSD' ! s-cysteinesulfinic acid
+RESI 'CSE' ! seleno-cysteine
+RESI 'CSO' ! hydroxy-cysteine
+RESI 'SEP' ! phospho-serine
+RESI 'TYS' ! sulfonated tyrosine
+RESI 'PTR' ! phosphotyrosine
+RESI 'TRY' ! tryptophan
+RESI 'KCX' ! lysine nz-carboxylic acid
+REMA
+REMA residue names for DNA/RNA bases
+REMA
+RESI 'ADE'
+RESI 'CYT'
+RESI 'GUA'
+RESI 'THY'
+RESI 'URI'
+RESI '  A'
+RESI '  C'
+RESI '  G'
+RESI '  T'
+RESI '  U'
+REMA
+REMA *************************************************************
+REMA
+END 

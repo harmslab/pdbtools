@@ -12,10 +12,12 @@ __all__ = ["nmr_combine-peaks.py",
            "pdb_download.py",
            "pdb_dssp.py",
            "pdb_exper.py",
+           "pdb_ligand.py",
            "pdb_moment.py",
            "pdb_mutator.py",
            "pdb_neighbors.py",
            "pdb_offset.py",
+           "pdb_oligomer.py",
            "pdb_param.py",
            "pdb_pdb2dir.py",
            "pdb_residue_renumber.py",
@@ -25,7 +27,8 @@ __all__ = ["nmr_combine-peaks.py",
            "pdb_splitnmr.py",
            "pdb_strip.py",
            "pdb_subset.py",
-           "pdb_torsion.py"]
+           "pdb_torsion.py",
+           "pdb_water-contact.py"]
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file

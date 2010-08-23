@@ -24,7 +24,7 @@ def splitNMR(pdb):
     pdb = [l for l in pdb if l[0:6] not in to_strip]
     pdb_hash = [(l[0:6],i) for i, l in enumerate(pdb)]
     pdb_hash = [x[1] for x in pdb_hash if x[0] == "MODEL "]
-    pdb_hash.append(-1)
+    pdb_hash.append(len(pdb))
 
     all_models = []
     for i in range(1,len(pdb_hash)):

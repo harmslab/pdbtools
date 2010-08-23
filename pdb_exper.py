@@ -33,7 +33,7 @@ def pdbExperiment(pdb):
         organism = "\'%s\'" % organism
 
     exp_type = "".join([l for l in pdb if l[0:6] == "EXPDTA"])
-    if exp_type[10:13] == "NMR":
+    if exp_type[19:22] == "NMR":
         exp_type = "NMR"
         resolution = "NA"
         r_value = "NA"

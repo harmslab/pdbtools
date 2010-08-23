@@ -182,7 +182,7 @@ def backboneCheck(coord):
 
 
 def addMissingAtoms(coord,seqres,keep_temp=False,renumber_residues=False,
-                    pdb_id=""):
+                    pdb_id="",fix_atoms=True,num_steps=500):
     
     # Grab the b-factor and occupancy columns
     bfact_occ = dict([(l[13:26],l[54:67]) for l in coord])
@@ -196,7 +196,7 @@ def addMissingAtoms(coord,seqres,keep_temp=False,renumber_residues=False,
     # Do a charmm run to add missing atoms.
     try:
         new_coord = charmm.interface.charmmWash(structure_list,
-            keep_temp=keep_temp)
+            keep_temp=keep_temp,fix_atoms=fix_atoms,num_steps=num_steps)
     except charmm.interface.CharmmInterfaceError, (strerror):
         err = "CharmmInterfaceError\n%s\n" % strerror
         raise PdbCleanError(err)
@@ -234,7 +234,7 @@ def addMissingAtoms(coord,seqres,keep_temp=False,renumber_residues=False,
     return out
 
 def pdbClean(pdb,pdb_id="temp",chains="all",renumber_residues=False,
-             keep_temp=False):
+             keep_temp=False,fix_atoms=True,num_steps=500):
     """
     Standardize a pdb file:
         - Remove waters, ligands, and other HETATMS
@@ -312,7 +312,8 @@ def pdbClean(pdb,pdb_id="temp",chains="all",renumber_residues=False,
     # Add missing atoms using CHARMM
     print log_fmt % "Adding heavy atoms using CHARMM.",
     seqres = [l for l in header if l[0:6] == "SEQRES"]
-    coord = addMissingAtoms(coord,seqres,keep_temp,renumber_residues,pdb_id)
+    coord = addMissingAtoms(coord,seqres,keep_temp,renumber_residues,pdb_id,
+                            fix_atoms,num_steps)
     log.append(log_fmt % "Missing heavy atoms were added with CHARMM.")
     
     # Renumber residues if requested
@@ -386,9 +387,21 @@ def main():
                       action="store_true",
                       default=True,
                       help="skip messed up pdb files")
-    
+    cmdline.addOption(short_flag="f",
+                      long_flag="fix_atoms",
+                      action="store_false",
+                      default=True,
+                      help="fix atoms in original file")   
+    cmdline.addOption(short_flag="n",
+                      long_flag="num_steps",
+                      action="store",
+                      default=500,
+                      help="number of minimization steps",
+                      nargs=1)
+
+ 
     file_list, options = cmdline.parseCommandLine()    
-    
+   
     # Parse command line options
     if options.chains == None:
         chains = "all"
@@ -398,8 +411,9 @@ def main():
     suffix = options.out_suffix
     renumber_residues = options.renumber_residues
     keep_temp = options.keep_temp
-    
-    
+    fix_atoms = options.fix_atoms 
+    num_steps = options.num_steps   
+ 
     for pdb_file in file_list:
 
         f = open(pdb_file,'r')
@@ -410,7 +424,8 @@ def main():
         pdb_id = pdb_file[:-4]
 
         try:
-            pdb = pdbClean(pdb,pdb_id,chains,renumber_residues,keep_temp)
+            pdb = pdbClean(pdb,pdb_id,chains,renumber_residues,keep_temp,
+                           fix_atoms,num_steps)
         except PdbCleanError, (strerror):
             err = "Error cleaning \"%s\"\n%s\n" % (pdb_file,strerror)
             print err,

@@ -17,6 +17,14 @@ __date__ = "080123"
 import os
 from pdb_data.common import *
 
+class PdbSeqError(Exception):
+    """
+    Error class for this module.
+    """
+
+    pass
+
+
 def pdbSeq(pdb,use_atoms=False):
     """
     Parse the SEQRES entries in a pdb file.  If this fails, use the ATOM 
@@ -35,6 +43,13 @@ def pdbSeq(pdb,use_atoms=False):
                 chain_dict[c].extend(x)
     # Otherwise, use ATOM
     else:
+
+        # Check to see if there are multiple models.  If there are, only look
+        # at the first model.
+        models = [i for i, l in enumerate(pdb) if l.startswith("MODEL")]
+        if len(models) > 1:
+            pdb = pdb[models[0]:models[1]]     
+
         seq_type = "ATOM  "
         atoms = [l for l in pdb if l[0:6] == "ATOM  " and l[13:16] == "CA "]
         chain_dict = dict([(l[21],[]) for l in atoms])
@@ -44,6 +59,29 @@ def pdbSeq(pdb,use_atoms=False):
     return chain_dict, seq_type 
 
 
+def convertModifiedAA(chain_dict,pdb):
+    """
+    Convert modified amino acids to their normal counterparts.
+    """
+
+    # See if there are any non-standard amino acids in the pdb file.  If there
+    # are not, return
+    modres = [l for l in pdb if l[0:6] == "MODRES"]
+    if len(modres) == 0:
+        return chain_dict
+
+    # Create list of modified residues
+    mod_dict = dict([(l[12:15],l[24:27]) for l in modres])
+
+    # Replace all entries in chain_dict with their unmodified counterparts.
+    for c in chain_dict.keys():
+        for i, a in enumerate(chain_dict[c]):
+            if mod_dict.has_key(a):
+                chain_dict[c][i] = mod_dict[a]
+
+    return chain_dict
+
+
 def pdbSeq2Fasta(pdb,pdb_id="",chain="all",use_atoms=False):
     """
     Extract sequence from pdb file and write out in FASTA format.
@@ -51,6 +89,9 @@ def pdbSeq2Fasta(pdb,pdb_id="",chain="all",use_atoms=False):
 
     # Grab sequences
     chain_dict, seq_type = pdbSeq(pdb,use_atoms)
+
+    # Convert modified amino acids to their natural counterparts
+    chain_dict = convertModifiedAA(chain_dict,pdb)
 
     # Determine which chains are being written out
     if chain == "all":

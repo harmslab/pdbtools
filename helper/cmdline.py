@@ -103,7 +103,7 @@ def parseArgs(args):
             if os.path.isfile("%s.pdb" % arg):
                 file_list.append("%s.pdb" % arg)
             else:
-                to_download.append(arg)
+                to_download.append(arg.lower())
 
     return file_list, to_download
 

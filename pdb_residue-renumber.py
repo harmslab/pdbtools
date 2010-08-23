@@ -18,7 +18,7 @@ __date__ = "070529"
 
 import os, sys
 
-def pdbResidueRenumber(pdb):
+def pdbResidueRenumber(pdb,start_res=None):
     """
     Renumber the residues in a pdb file so they are continuous.
     """
@@ -37,9 +37,15 @@ def pdbResidueRenumber(pdb):
                 start = False
                 current_res = line[22:26]
                 if int(line[22:26]) < 1:
-                    output_res = 1
+                    if start_res != None:
+                        output_res = start_res
+                    else:
+                        output_res = 1
                 else:
-                    output_res = int(line[22:26])
+                    if start_res != None:
+                        output_res = start_res
+                    else:
+                        output_res = int(line[22:26])
 
                 align_out.append(fmt % (line[17:22],current_res,output_res,
                                         int(current_res)==output_res))
@@ -64,7 +70,10 @@ def pdbResidueRenumber(pdb):
             pdb_out.append(line)
 
     # Insert REMARK about renumber
-    remark_index = [l[0:6] for l in pdb].index("REMARK")
+    try:
+        remark_index = [l[0:6] for l in pdb].index("REMARK")
+    except ValueError:
+        remark_index = 0
     pdb_out.insert(remark_index,"%-80s\n" %
                    ("REMARK    *ALL GAPS IN CHAIN RENUMBERED*"))
    
@@ -84,6 +93,12 @@ def main():
                       action="store_true",
                       default=False,
                       help="write out residue alignment file.")
+    cmdline.addOption(short_flag="s",
+                      long_flag="start-res",
+                      action="store",
+                      type=int,
+                      default=None,
+                      help="Start at residues s")
     
     file_list, options = cmdline.parseCommandLine()
 
@@ -93,7 +108,7 @@ def main():
         pdb = f.readlines()
         f.close()
 
-        pdb_out, alignment = pdbResidueRenumber(pdb)
+        pdb_out, alignment = pdbResidueRenumber(pdb,options.start_res)
 
         short_pdb = os.path.split(pdb_file)[-1][:-4]
         g = open("%s_res-renum.pdb" % short_pdb,"w")
