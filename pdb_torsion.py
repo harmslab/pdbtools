@@ -40,9 +40,10 @@ def pdbTorsion(pdb):
     # Calculate phi and psi for each residue
     labels = []
     dihedrals = []
+    label_atoms = [l for l in atoms if l[0:4] == "ATOM" and l[13:16] == "CA "]
     for i in range(1,num_resid-1):
         try:
-            labels.append((atoms[i][17:20],atoms[i][21:26]))
+            labels.append((label_atoms[i][17:20],label_atoms[i][21:26]))
             dihedrals.append(geometry.calcDihedrals(CO[i-1],N[i],CA[i],CO[i],
                                                     N[i+1]))
         except ValueError:
