@@ -41,8 +41,11 @@ def pdbSeq(pdb,use_atoms=False):
             chain_seq = [l[19:70].split() for l in seq if l[11] == c]
             for x in chain_seq:
                 chain_dict[c].extend(x)
+
     # Otherwise, use ATOM
     else:
+
+        seq_type = "ATOM  "
 
         # Check to see if there are multiple models.  If there are, only look
         # at the first model.
@@ -50,8 +53,14 @@ def pdbSeq(pdb,use_atoms=False):
         if len(models) > 1:
             pdb = pdb[models[0]:models[1]]     
 
-        seq_type = "ATOM  "
-        atoms = [l for l in pdb if l[0:6] == "ATOM  " and l[13:16] == "CA "]
+        # Grab all CA from ATOM entries, as well as MSE from HETATM
+        atoms = []
+        for l in pdb:
+            if l[0:6] == "ATOM  " and l[13:16] == "CA ":
+                atoms.append(l)
+            elif l[0:6] == "HETATM" and l[13:16] == "CA " and l[17:20] == "MSE":
+                atoms.append(l)
+
         chain_dict = dict([(l[21],[]) for l in atoms])
         for c in chain_dict.keys():
             chain_dict[c] = [l[17:20] for l in atoms if l[21] == c]
