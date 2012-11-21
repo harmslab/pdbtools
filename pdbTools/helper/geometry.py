@@ -198,9 +198,9 @@ def calcDihedrals(prevCO,currN,currCA,currCO,nextN,cutoff=6.5):
     D = [nextN[i] - currCA[i] for i in range(3)]
  
     # Make sure the atoms are close enough 
-    if max([dist_sq(x) for x in [A,B,C,D]]) > cutoff:
-        err = "Atoms too far apart to be bonded!"
-        raise ValueError(err)
+    #if max([dist_sq(x) for x in [A,B,C,D]]) > cutoff:
+    #    err = "Atoms too far apart to be bonded!"
+    #    raise ValueError(err)
  
     # Calculate necessary cross products (define vectors normal to planes)
     V1 = crossProduct(A,B)

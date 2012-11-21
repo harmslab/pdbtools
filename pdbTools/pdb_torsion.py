@@ -19,35 +19,80 @@ def pdbTorsion(pdb):
     """
     Calculate the backbone torsion angles for a pdb file.
     """
-    
-    # Filter pdb file taking only N, CA, and C atoms
-    atoms = [line for line in pdb if line[0:4] == 'ATOM' and
-             line[13:16] in ['N  ','CA ','C  ']]
 
-    # Define arrays that will contain CA, CO, and N coordinates
-    num_resid = len(atoms)/3
-    N = [[0.,0.,0.] for i in range(num_resid)]
-    CA = [[0.,0.,0.] for i in range(num_resid)]
-    CO = [[0.,0.,0.] for i in range(num_resid)]
+    residue_list = []
+    N = []
+    CO = []
+    CA = []
 
-    # Read the list of atoms into the coordinate arrays
-    for i in range(num_resid):
-        for j in range(3):
-            N[i][j] = float(atoms[i*3][30+8*j:39+8*j])
-            CA[i][j] = float(atoms[1+i*3][30+8*j:39+8*j])
-            CO[i][j] = float(atoms[2+i*3][30+8*j:39+8*j])
+    resid_contents = {}
+    current_residue = None
+    to_take = ["N  ","CA ","C  "]
+    for line in pdb:
+        if line[0:4] == "ATOM" or (line[0:6] == "HETATM" and line[17:20] == "MSE"):
 
-    # Calculate phi and psi for each residue
+            if line[13:16] in to_take:
+
+                # First residue
+                if current_residue == None:
+                    current_residue = line[17:26]
+               
+                # If we're switching to a new residue, record the previously
+                # recorded one.
+                if current_residue != line[17:26]:
+
+                    try:
+                        N.append([float(resid_contents["N  "][30+8*i:39+8*i])
+                                  for i in range(3)])
+                        CO.append([float(resid_contents["C  "][30+8*i:39+8*i])
+                                   for i in range(3)])
+                        CA.append([float(resid_contents["CA "][30+8*i:39+8*i])
+                                   for i in range(3)])
+                        residue_list.append(current_residue)
+
+                    except KeyError:
+                        err = "Residue %s has missing atoms: skipping.\n" % current_residue
+                        sys.stderr.write(err)
+
+                    # Reset resid contents dictionary
+                    current_residue = line[17:26]
+                    resid_contents = {}
+
+                # Now record N, C, and CA entries.  Take only a unique one from
+                # each residue to deal with multiple conformations etc.
+                if not resid_contents.has_key(line[13:16]): 
+                    resid_contents[line[13:16]] = line
+                else:
+                    err = "Warning: %s has repeated atoms!\n" % current_residue 
+                    sys.stderr.write(err)
+      
+    # Record the last residue            
+    try:
+        N.append([float(resid_contents["N  "][30+8*i:39+8*i])
+                  for i in range(3)])
+        CO.append([float(resid_contents["C  "][30+8*i:39+8*i])
+                   for i in range(3)])
+        CA.append([float(resid_contents["CA "][30+8*i:39+8*i])
+                   for i in range(3)])
+        residue_list.append(current_residue)
+
+    except KeyError:
+        err = "Residue %s has missing atoms: skipping.\n" % current_residue
+        sys.stderr.write(err)
+
+        
+    # Calculate phi and psi for each residue.  If the calculation fails, write
+    # that to standard error and move on.
     labels = []
     dihedrals = []
-    label_atoms = [l for l in atoms if l[0:4] == "ATOM" and l[13:16] == "CA "]
-    for i in range(1,num_resid-1):
+    for i in range(1,len(residue_list)-1):
         try:
-            labels.append((label_atoms[i][17:20],label_atoms[i][21:26]))
             dihedrals.append(geometry.calcDihedrals(CO[i-1],N[i],CA[i],CO[i],
                                                     N[i+1]))
+            labels.append(residue_list[i])
         except ValueError:
-            pass
+            err = "Dihedral calculation failed for %s\n" % residue_list[i]
+            sys.stderr.write(err)
 
     return dihedrals, labels
 
@@ -75,8 +120,8 @@ def main():
         # Print out results in pretty fashion
         short_pdb =  os.path.split(pdb_file)[-1][:-4] 
         for i in range(len(dihedrals)):
-            out.append("%30s%4s \"%5s\"%10.2F%10.2F\n" %\
-                       (short_pdb,labels[i][0],labels[i][1],
+            out.append("%30s%4s \"%s\"%10.2F%10.2F\n" %\
+                       (short_pdb,labels[i][:3],labels[i][4:],
                         dihedrals[i][0],dihedrals[i][1]))
 
     out = ["%10i%s" % (i,x) for i, x in enumerate(out)]
@@ -85,8 +130,6 @@ def main():
     out.insert(0,header)
     print "".join(out) 
 
-    
-    
 
 if __name__ == "__main__":
     main()
