@@ -15,7 +15,7 @@ __date__ = "111116"
 
 import os
 
-def pdbContacting(pdb,target,cutoff):
+def pdbContacting(pdb,target,cutoff,target_type="resname"):
     """
     """
   
@@ -25,7 +25,10 @@ def pdbContacting(pdb,target,cutoff):
     all_coord = [[l[12:26],[float(l[30+8*i:38+8*i]) for i in range(3)]]
                  for l in pdb if l[0:6] in to_take] 
 
-    target_list = [a for a in all_coord if a[0][5:8].strip() == target]
+    if target_type == "resname":
+        target_list = [a for a in all_coord if a[0][5:8].strip() == target]
+    else:
+        target_list = [a for a in all_coord if int(a[0][10:14]) == target]
 
     out = []
     for t in target_list:
@@ -54,11 +57,17 @@ def main():
 
     
     cmdline.initializeParser(__description__,__date__)
-    cmdline.addOption(short_flag="t",
-                      long_flag="target",
+    cmdline.addOption(short_flag="r",
+                      long_flag="resname",
                       action="store",
                       default="TRP",
-                      help="residue target to look for contacts near",
+                      help="look for contacts near specified resname",
+                      nargs=1)
+    cmdline.addOption(short_flag="n",
+                      long_flag="resnum",
+                      action="store",
+                      default=None,
+                      help="look for contacts near specified residue number",
                       nargs=1)
     cmdline.addOption(short_flag="d",
                       long_flag="distance",
@@ -69,6 +78,14 @@ def main():
                       type=float)
 
     file_list, options = cmdline.parseCommandLine()
+
+    if options.resnum != None:
+        target_type = "resnum"
+        target = int(options.resnum)
+    else:
+        target_type = "resname"
+        target = options.resname
+
 
     out = []
     for pdb_file in file_list:
@@ -82,7 +99,7 @@ def main():
         if len(models) > 0:
             pdb = models[0]
 
-        tmp_out = pdbContacting(pdb,options.target,options.distance)
+        tmp_out = pdbContacting(pdb,target,options.distance,target_type)
 
         out.extend(["%s\t%s" % (pdb_file[:-4],t) for t in tmp_out])
 
