@@ -57,8 +57,22 @@ def pdbSeq(pdb,use_atoms=False):
         atoms = []
         for l in pdb:
             if l[0:6] == "ATOM  " and l[13:16] == "CA ":
+                    
+                # Check to see if this is a second conformation of the previous
+                # atom
+                if len(atoms) != 0:
+                    if atoms[-1][17:26] == l[17:26]:
+                        continue
+
                 atoms.append(l)
             elif l[0:6] == "HETATM" and l[13:16] == "CA " and l[17:20] == "MSE":
+
+                # Check to see if this is a second conformation of the previous
+                # atom
+                if len(atoms) != 0:
+                    if atoms[-1][17:26] == l[17:26]:
+                        continue
+
                 atoms.append(l)
 
         chain_dict = dict([(l[21],[]) for l in atoms])
