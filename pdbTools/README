@@ -1,8 +1,8 @@
                                 pdb-tools
-                               Release 0.1
-                             April 22,  2008
+                               Release 0.2
+                            November 21, 2012
 
-pdb-tools is a set of python scripts that manipulate wwPDB macromolecule
+pdbTools is a set of python scripts that manipulate wwPDB macromolecule
 structure files.  There are many programs, both open source and proprietary,
 that perform similar tasks; however, most of these tools are buried within
 programs of larger functionality.  Thus, relatively simple calculations often
@@ -51,9 +51,6 @@ CHARMM (http://www.charmm.org/)
 To use CHARMM with pdb-tools, define the environment variable $CHARMM to point
 to the directory containing the charmm binary, and $CHARMM_LIB to point to the
 directory with the CHARMM topology and parameter files.
-
-DSSP (http://swift.cmbi.ru.nl/gv/dssp/)
-    pdb_dssp.py
 
 NACCESS (http://www.bioinf.manchester.ac.uk/naccess/)
     pdb_sasa.py
