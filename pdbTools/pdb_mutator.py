@@ -58,8 +58,8 @@ def mutateResidue(pdb,residue_number,mutation,chain=None):
 
 def pdbMutator(pdb,residue,mutation,chain=None,run_charmm=True):
     """
-    Standardize a pdb file: remove HETATM and ANISOU entries, renumber atoms,
-    take only a particular chain, remove alternate conformations.
+    Mutate a residue in the pdb file, energy minimizing with CHARMM if
+    requested.
     """
 
     # grab header

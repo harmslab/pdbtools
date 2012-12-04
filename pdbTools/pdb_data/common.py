@@ -1,4 +1,4 @@
-# Copyright 2007, Michael J. Harms
+# Copyright 2007, 2012, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
 # COPYING for a copy of the license.  
 
@@ -9,7 +9,7 @@ common.py
 Common data for all scripts in pdb_tools.
 """
 __author__ = "Michael J. Harms"
-__date__ = "080123"
+__date__ = "121204"
 
 # --------------------------------------------------------------------------- #
 # Chemical data
@@ -73,6 +73,77 @@ MW_DICT = {"ALA" : 89.09,
            "STA" : 157.15,
            "ACE" : 43.30}
 MW_H2O = 18.0
+
+# Weights for some (most, but not all probably) atoms in a rcsb
+ATOM_WEIGHTS = {"H":1.00794,
+                "D":2.01410178, # deuterium
+                "HE":4.00,
+                "LI":6.941,
+                "BE":9.01,
+                "B":10.811,
+                "C":12.0107,
+                "N":14.0067,
+                "O":15.9994,
+                "F":18.998403,
+                "NE":20.18,
+                "NA":22.989769,
+                "MG":24.305,
+                "AL":26.98,
+                "SI":28.09,
+                "P":30.973762,
+                "S":32.065,
+                "CL":35.453,
+                "AR":39.95,
+                "K":39.0983,
+                "CA":40.078,
+                "SC":44.96,
+                "TI":47.87,
+                "V":50.94,
+                "CR":51.9961,
+                "MN":54.938045,
+                "FE":55.845,
+                "CO":58.93,
+                "NI":58.6934,
+                "CU":63.546,
+                "ZN":65.409,
+                "GA":69.72,
+                "GE":72.64,
+                "AS":74.9216,
+                "SE":78.96,
+                "BR":79.90,
+                "KR":83.80,
+                "RB":85.47,
+                "SR":87.62,
+                "Y":88.91,
+                "ZR":91.22,
+                "NB":92.91,
+                "W":95.94, #Molybdenum?  Not sure why it's not always MO
+                "MO":95.94,
+                "TC":98.0,
+                "RU":101.07,
+                "RH":102.91,
+                "PD":106.42,
+                "AG":107.8682,
+                "CD":112.411,
+                "IN":114.82,
+                "SN":118.71,
+                "SB":121.76,
+                "TE":127.60,
+                "I":126.90447,
+                "XE":131.29,
+                "CS":132.91,
+                "BA":137.33,
+                "PR":140.91,
+                "EU":151.96,
+                "GD":157.25,
+                "TB":158.93,
+                "IR":192.22,
+                "PT":195.084,
+                "AU":196.96657, 
+                "HG":200.59,
+                "PB":207.2,
+                "U":238.03}
+                 
 
 # Dictionary of van der Waal radii
 VDW_DICT = {"N  ":1.650,
