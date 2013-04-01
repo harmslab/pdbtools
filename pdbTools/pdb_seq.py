@@ -137,7 +137,7 @@ def pdbSeq2Fasta(pdb,pdb_id="",chain="all",use_atoms=False):
 
     out = []
     for c in chains_to_write:
-        out.append("> %s%s_%s\n" % (pdb_id,c,seq_type))
+        out.append(">%s%s_%s\n" % (pdb_id,c,seq_type))
 
         # Write output in lines 80 characters long
         seq_length = len(chain_dict[c])
