@@ -4,6 +4,9 @@
 # This program is distributed under General Public License v. 3.  See the file
 # COPYING for a copy of the license.  
 
+# Thanks to Blatter Markus for adding the capability to deal with HETATM and 
+# NMR models
+
 __description__ = \
 """
 pdb_atom_renumber.py
