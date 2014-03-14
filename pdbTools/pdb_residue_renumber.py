@@ -127,7 +127,7 @@ def main():
                       help="Make the first residue in the file have s")
     cmdline.addOption(short_flag="r",
                       long_flag="renumber-het",
-                      action="store_true",
+                      action="store_false",
                       default=True,
                       help="include hetatm entries in the renumbering.")
     cmdline.addOption(short_flag="g",

@@ -27,10 +27,18 @@ class PdbSubsetError(Exception):
 def pdbSubset(pdb,chain,residues,
               atom_list=["ATOM  ","ANISOU","HETATM","TER   "]):
     """
-    Grabs a subset of a pdb file, spitting out the pdb, the chain, and the 
+    Grabs a subset of a pdb file, spitting out the pdb, the chains, and the 
     actual min and max in the pdb file.
     """
+    
+    if chain == "all":
+        chains = ()
+        chain_string = "all" 
+    else:
+        chains = tuple(chain.split(","))
+        chain_string = "".join(chains)
 
+    seen_chains = []
     out = []
     for line in pdb:
 
@@ -39,8 +47,12 @@ def pdbSubset(pdb,chain,residues,
             out.append(line)
             continue    
         
-        # Grab only residues belonging to chain
-        if chain == "all" or line[21:22] == chain:
+        # Grab only residues belonging to specified chains.  If chains is empty
+        # take every chain
+        if chains == () or line[21:22] in chains:
+
+            if line[21:22] not in seen_chains:
+                seen_chains.append(line[21:22])
    
             # Grab only residues above minimum and below maximum 
             if residues[0] == 0 and residues[1] == 0:
@@ -54,8 +66,20 @@ def pdbSubset(pdb,chain,residues,
             continue
 
     if len([l for l in out if l[0:6] in atom_list]) == 0:
-        err = "No residues in pdb meet subset criteria!"
+        err = "No residues in pdb meet subset criteria.\n"
         raise PdbSubsetError(err)
+
+    seen_chains.sort()
+    input_chains = list(chains)
+    input_chains.sort()
+
+    if len(input_chains) > 0:
+        if seen_chains != input_chains:
+            missing_chains = ",".join([c for c in input_chains
+                                       if c not in seen_chains])
+            err = "pdb file did not have chain(s): %s.\n" % missing_chains
+            raise PdbSubsetError(err)
+        
 
     # Determine the actual min and max in the pdb file
     residues = [0,0]
@@ -63,7 +87,7 @@ def pdbSubset(pdb,chain,residues,
     residues[0] = min(all_residues)
     residues[1] = max(all_residues)                                 
 
-    return out, chain, residues
+    return out, chain_string, residues
 
 
 def main():
@@ -80,7 +104,7 @@ def main():
                           long_flag="chain",
                           action="store",
                           default="all",
-                          help="chain to select",
+                          help="chain to select (separte mulitiple by commas)",
                           nargs=1,
                           type=str)
     cmdline.addOption(short_flag="r",
