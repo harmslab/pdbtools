@@ -3,7 +3,8 @@ pdbtools
 
 A set of tools for manipulating and doing calculations on wwPDB macromolecule structure files
 
-=Introduction=
+Introduction
+====
 pdbTools is a set of command line [http://www.python.org python] scripts that manipulate [http://www.wwpdb.org/ wwPDB] protein and nucleic acid structure files.  There are many programs, both open source and proprietary, that perform similar tasks; however, most of these tools are buried within programs of larger functionality.  Thus, relatively simple calculations often involve learning a new program, compiling modules, and installing libraries. To fill a niche (and get the tasks done that I needed done), I started writing my own toolset.  This has evolved into the pdbTools suite.  The suite of programs is characterized by the following philosophy:
 
   # Each program should run as a stand-alone application with a standard, GNU/POSIX style command line interface.
@@ -14,13 +15,17 @@ Most of the scripts will run "out of the box" using a python interpreter.  The c
 
 *Note:* These scripts are only compatible with Python version 2.4-2.7.
 
-=Current functions=
+Current functions
+===
 
-==Miscellaneous==
+Miscellaneous
+==
   * download pdb files from the RCSB database: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_download.py pdb_download.py]
 
-==Structure-based calculations==
-===Geometry===
+Structure-based calculations
+==
+Geometry
+==
   * calculate protein center of mass: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_centermass.py pdb_centermass.py]
   * calculate distance distributions: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_dist-filter.py pdb_dist-filter.py],  [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_ion-dist.py pdb_ion_dist.py]
   * calculate backbone torsion angles: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_torsion.py pdb_torsion.py]
@@ -31,16 +36,19 @@ Most of the scripts will run "out of the box" using a python interpreter.  The c
   * find ligands in structure file (ignoring boring ligands like water): [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_ligand.py pdb_ligand.py]
   * figure out oligomerization state of macrmolecule: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_oligomer.py pdb_oligomer.py]
 
-===Energy calculation===
+Energy calculation
+==
   * calculate coulomb energy: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_coulomb.py pdb_coulomb.py]
   * calculate the dipole moment of the protein: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_moment.py pdb_moment.py]
   * calculate pKa of ionizable groups using the Solvent-Accessibility-modified Tanford-Kirkwood method [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_satk.py pdb_satk.py] (requires fortran compiler) 
-===Structure properties===
+Structure properties
+==
   * extract structure experiment properties: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_exper.py pdb_exper.py]
   * extract protein sequence from structure: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_seq.py pdb_seq.py]
   * calculate theoretical pI, MW, fraction titratable residues, charge: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_param.py pdb_param.py]
 
-==File/structure manipulation==
+File/structure manipulation
+==
   * add polar hydrogens: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_addH.py pdb_addH.py] (requires [http://www.charmm.org/ CHARMM])
   * add missing heavy atoms, remove alternate conformations, etc.: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_clean.py pdb_clean.py] (requires [http://www.charmm.org/ CHARMM])
   * mutate a residue: [http://code.google.com/p/pdb-tools/source/browse/trunk/pdbTools/pdb_mutator.py pdb_mutator.py] (requires [http://www.charmm.org/ CHARMM])
@@ -56,8 +64,10 @@ Most of the scripts will run "out of the box" using a python interpreter.  The c
 
 Some of the programs are written as interfaces to other programs: [http://www.charmm.org/ CHARMM],  [http://www.bioinf.manchester.ac.uk/naccess/ NACCESS], which must be downloaded and installed separately if their functions are desired.  To use pdb_satk.py, a set of fortran packages must be compiled.
 
-==Contributing==
-If you find a bug or have an idea for a program you'd like in this package, please let me know.  You can also send me your own code to incorporate, preferably via an svn branch.  
+Contributing
+==
+If you find a bug or have an idea for a program you'd like in this package, feel free to make a pull request!
 
-=Project Owner=
+Project Owner
+==
   * Mike Harms ([http://harmslab.uoregon.edu])
