@@ -55,6 +55,29 @@ Most of the scripts will run "out of the box" using a python interpreter.  The c
 
 Some of the programs are written as interfaces to other programs: [CHARMM](http://www.charmm.org/),  [NACCESS](http://www.bioinf.manchester.ac.uk/naccess/ NACCESS), which must be downloaded and installed separately if their functions are desired.  To use pdb_satk.py, a set of fortran packages must be compiled.
 
+
+
+##User Guide
+
+###Usage
+
+Almost all programs in the pdbTools suite have the same usage:
+
+pdb_XXXX.py pdb_input optional_args > output
+
+**pdb_input** can be one of the following (in any arbitrary combination):
+  * pdb files
+  * directories of pdb files
+  * four-character pdb ids
+  * text files containing whitespace delimited (i.e. space, tab, carriage return) lists of any combination of the other allowed types of arguments. If the list of arguments contains pdb files or ids that do not exist locally, the parser will attempt to download the files from the RCSB database.  
+
+**optional_args**: Although the arguments to each program are identical, the options are quite different depending on the program requirements.  The best way to learn how to use a particular program is to type pdb_XXXX.py --help.  This will spit out a list of available options.  In most cases, the options are actually optional: the program will use a sane default if none is specified.  In some cases (notably pdb_mutator.py), options must be specified for the program to run. 
+
+**output**: Most scripts dump out a pdb file to standard out.  This can be captured using the ">" redirect.   Some write an output file that uses the name of the input pdb file as a suffix (e.g. pdb_close-contacts.py 1stn.pdb creates a file called 1stn.pdb.close_contacts).  
+
+**Note**: Some scripts require installation of third-party programs.  These should be installed according to the instructions given by the third-party, then placed into the $PATH variable.  To use the scripts that require CHARMM, the `$CHARMM` environment variable must be set to the directory containing the `charmm` binary and the `$CHARMM_LIB` environment variable to the directory containing the charmm parameter files.  
+
+
 ##Contributing
 If you find a bug or have an idea for a program you'd like in this package, feel free to open an issue.  Even better: feel free to make a pull request!
 
