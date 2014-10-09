@@ -56,10 +56,7 @@ Most of the scripts will run "out of the box" using a python interpreter.  The c
 Some of the programs are written as interfaces to other programs: [CHARMM](http://www.charmm.org/),  [NACCESS](http://www.bioinf.manchester.ac.uk/naccess/ NACCESS), which must be downloaded and installed separately if their functions are desired.  To use pdb_satk.py, a set of fortran packages must be compiled.
 
 
-
-##User Guide
-
-###Usage
+##Usage
 
 Almost all programs in the pdbTools suite have the same usage:
 
@@ -75,7 +72,8 @@ pdb_XXXX.py pdb_input optional_args > output
 
 **output**: Most scripts dump out a pdb file to standard out.  This can be captured using the ">" redirect.   Some write an output file that uses the name of the input pdb file as a suffix (e.g. pdb_close-contacts.py 1stn.pdb creates a file called 1stn.pdb.close_contacts).  
 
-**Note**: Some scripts require installation of third-party programs.  These should be installed according to the instructions given by the third-party, then placed into the $PATH variable.  To use the scripts that require CHARMM, the `$CHARMM` environment variable must be set to the directory containing the `charmm` binary and the `$CHARMM_LIB` environment variable to the directory containing the charmm parameter files.  
+##Third Party Software
+Some scripts require installation of third-party programs.  These should be installed according to the instructions given by the third-party, then placed into the $PATH variable.  To use the scripts that require CHARMM, the `$CHARMM` environment variable must be set to the directory containing the `charmm` binary and the `$CHARMM_LIB` environment variable to the directory containing the charmm parameter files.  
 
 
 ##Contributing
