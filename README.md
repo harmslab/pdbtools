@@ -5,9 +5,9 @@ A set of tools for manipulating and doing calculations on wwPDB macromolecule st
 ##Introduction
 pdbTools is a set of command line [python](http://www.python.org) scripts that manipulate [wwPDB](http://www.wwpdb.org/) protein and nucleic acid structure files.  There are many programs, both open source and proprietary, that perform similar tasks; however, most of these tools are buried within programs of larger functionality.  Thus, relatively simple calculations often involve learning a new program, compiling modules, and installing libraries. To fill a niche (and get the tasks done that I needed done), I started writing my own toolset.  This has evolved into the pdbTools suite.  The suite of programs is characterized by the following philosophy:
 
-  # Each program should run as a stand-alone application with a standard, GNU/POSIX style command line interface.
-  # Each program should be written in such a way to allow it to be used as a library of functions for more complex programs.
-  # Programs should require a minimum of external dependencies.
+  * Each program should run as a stand-alone application with a standard, GNU/POSIX style command line interface.
+  * Each program should be written in such a way to allow it to be used as a library of functions for more complex programs.
+  * Programs should require a minimum of external dependencies.
 
 Most of the scripts will run "out of the box" using a python interpreter.  The command line parser is designed to be flexible.  It will take an arbitrarily long list of pdb files, pdb ids, text files with pdb ids, or some mixture of all three.  If the pdb file or id is not in the working directory, scripts will attempt to download the pdb file from [RCSB](http://www.rcsb.org/).  Depending on the type of operation being done, a program will either write output files in the working directory or will print to stdout.  All structure outputs are written in standard pdb format.  All data outputs are in fixed-width column format.  They were designed to be read by the statistics package [R](http://cran.r-project.org/); however, they should be easily parsed by other graphing programs.
 
@@ -56,8 +56,8 @@ Most of the scripts will run "out of the box" using a python interpreter.  The c
 Some of the programs are written as interfaces to other programs: [CHARMM](http://www.charmm.org/),  [NACCESS](http://www.bioinf.manchester.ac.uk/naccess/ NACCESS), which must be downloaded and installed separately if their functions are desired.  To use pdb_satk.py, a set of fortran packages must be compiled.
 
 ##Contributing
-If you find a bug or have an idea for a program you'd like in this package, feel free to make a pull request!
+If you find a bug or have an idea for a program you'd like in this package, feel free to open an issue.  Even better: feel free to make a pull request!
 
 ##Project Owner
-Mike Harms (http://harmslab.uoregon.edu)
+Mike Harms (https://github.com/harmsm, http://harmslab.uoregon.edu)
 
