@@ -34,7 +34,7 @@ def pdbContacting(pdb,target,cutoff,target_type="resname"):
     for t in target_list:
         contacts = []
         for a in all_coord:
-            if sum([(a[1][i]-t[1][i])**2 for i in range(3)]) < cutoff:
+            if sum([(a[1][i]-t[1][i])**2 for i in range(3)]) < cutoff_sq:
 
                 # ignore self
                 if t[0] == a[0]:
