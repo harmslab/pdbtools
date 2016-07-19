@@ -2,13 +2,13 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
 pdb_close-contacts.py
 
-Create a list of atoms that are within some distance cutoff of each other in 
+Create a list of atoms that are within some distance cutoff of each other in
 a pdb file.
 """
 
@@ -16,20 +16,20 @@ __author__ = "Michael J. Harms"
 __date__ = ""
 
 import os, sys
-from helper import geometry
-from pdb_contactplot import pdbContact
+from .helper import geometry
+from .contactplot import pdbContact
 
 def pdbCloseContacts(pdb,ca_only,distance_cutoff):
     """
-    Return a list of atom-atom distances that are less than distance_cutoff. 
+    Return a list of atom-atom distances that are less than distance_cutoff.
     It ignores atom-atom distances within a given residue.  If ca_only is True,
     it will only look at CA atoms.
     """
-  
-    pdb = [l for l in pdb if l[:4] == "ATOM"] 
- 
+
+    pdb = [l for l in pdb if l[:4] == "ATOM"]
+
     distances = pdbContact(pdb,not ca_only)
-    
+
     if ca_only:
         pdb = [l for l in pdb if l[13:16] == "CA "]
 
@@ -50,8 +50,8 @@ def pdbCloseContacts(pdb,ca_only,distance_cutoff):
 
 
                     output.append((pdb[i][13:26],pdb[j][13:26],distances[i][j]))
-        
-    return output 
+
+    return output
 
 
 def main():
@@ -61,7 +61,7 @@ def main():
 
     from helper import cmdline
 
-    
+
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="c",
                           long_flag="ca_only",
@@ -79,7 +79,7 @@ def main():
     file_list, options = cmdline.parseCommandLine()
 
     for pdb_file in file_list:
-        
+
         f = open(pdb_file,'r')
         pdb = f.readlines()
         f.close()
@@ -91,7 +91,7 @@ def main():
         out.append("%10s%16s%16s%12s\n" % (" ","atom1","atom2","dist"))
         for i, o in enumerate(output):
             out.append("%10i \"%s\" \"%s\"%12.3f\n" % (i,o[0],o[1],o[2]))
-    
+
         g = open("%s.close_contacts" % pdb_file,"w")
         g.writelines(out)
         g.close()
@@ -99,5 +99,3 @@ def main():
 # If run from command line...
 if __name__ == "__main__":
     main()
-        
-

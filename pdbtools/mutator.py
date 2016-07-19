@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -16,9 +16,10 @@ __date__ = "070729"
 __description__ = "Mutates a residue in a pdb file"
 
 import sys, time, string, os
-import pdb_atom_renumber, pdb_clean
-from helper import container
-from pdb_data.common import *
+import .atom_renumber
+import .clean
+from .helper import container
+from .data.common import *
 
 class MutatorError(Exception):
     """
@@ -33,27 +34,27 @@ def mutateResidue(pdb,residue_number,mutation,chain=None):
     with CHARMM.  The residue is "mutated" but all atoms besides N CA C O and
     CB are simply removed so that they will be added and minimized in CHARMM.
     """
-    
+
     keep_atoms = ["N  ","CA ","C  ","O  ","CB "]
-    
+
     # Find residue to mutate
     residue = [l for l in pdb if int(l[22:26]) == residue_number]
     if chain != None:
         residue = [l for l in residue if l[21] == chain]
-    
+
     original_aa = residue[0][17:20]
-    
+
     # Do mutation
     index = pdb.index(residue[0])
     for i, r in enumerate(residue):
-        residue[i] = "%s%-4s%s" % (r[:17],mutation,r[21:])    
+        residue[i] = "%s%-4s%s" % (r[:17],mutation,r[21:])
         pdb[index + i] = residue[i]
-    
+
     # Remove non-backbone/CB atoms
     for atom in residue:
         if atom[13:16] not in keep_atoms:
             pdb.remove(atom)
-    
+
     return pdb, original_aa
 
 def pdbMutator(pdb,residue,mutation,chain=None,run_charmm=True):
@@ -66,16 +67,16 @@ def pdbMutator(pdb,residue,mutation,chain=None,run_charmm=True):
     header = [l for l in pdb if l[0:6] not in pdb_clean.COORD_RECORDS and
                                 l[0:6] not in pdb_clean.DEPRECATED_RECORDS]
 
-    # Grab coordinates 
+    # Grab coordinates
     coord = [l for l in pdb if l[0:6] == "ATOM  "]
     if pdb_clean.pdbCheck(coord):
-        err = "There are no ATOM entries in this pdb file!" 
+        err = "There are no ATOM entries in this pdb file!"
         raise MutatorError(err)
 
     coord, original_aa = mutateResidue(coord,residue,mutation,chain)
     mutation_string = "%s%i%s" % (AA3_TO_AA1[original_aa],residue,
                                   AA3_TO_AA1[mutation])
-    
+
     # Set up log
     log = ["REMARK  %s introduced by pdb_mutator (harmsm@jhu.edu)\n" % \
            mutation_string]
@@ -85,14 +86,14 @@ def pdbMutator(pdb,residue,mutation,chain=None,run_charmm=True):
         log.append(log_fmt % ("Mutation introduced on all chains"))
     else:
         log.append(log_fmt % ("Mutation introduced on chain %s" % chain))
-    
+
     # Add missing atoms using CHARMM
     if run_charmm:
         print log_fmt % "Adding mutated side chain using CHARMM",
         seqres = [l for l in header if l[0:6] == "SEQRES"]
         coord = pdb_clean.addMissingAtoms(coord,seqres)
         log.append(log_fmt % "Mutated sidechain built with CHARMM")
-    
+
     # Renumber atoms from 1
     coord = pdb_atom_renumber.pdbAtomRenumber(coord)
     log.append(log_fmt % "Renumbered atoms from 1")
@@ -102,7 +103,7 @@ def pdbMutator(pdb,residue,mutation,chain=None,run_charmm=True):
     coord = ["%s           %s  \n" % (c[:66],c[13]) for c in coord]
     log.append(log_fmt % "Atom types were standardized.")
     print log[-1],
-    
+
     # Final check
     if pdb_clean.pdbCheck(coord):
         err = "Unknown error occured and pdb has been mangled!"
@@ -123,7 +124,7 @@ def main():
     """
 
     from helper import cmdline
-    
+
     # Parse command line
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="c",
@@ -150,39 +151,39 @@ def main():
                       action="store_true",
                       default=False,
                       help="No atoms beyond CB added (i.e. no CHARMM)")
-                      
-    
- 
-    file_list, options = cmdline.parseCommandLine()    
-    
+
+
+
+    file_list, options = cmdline.parseCommandLine()
+
     # Parse command line options
-    
+
     if options.residue == None:
         err = "Residue (-r) argument is required!"
         raise cmdline.parser.error(err)
     else:
         residue = options.residue
-        
+
     if options.mutation == None:
         err = "Mutation (-m) argument is required!"
         raise cmdline.parser.error(err)
     else:
         mutation = options.mutation
-    
+
     chain = options.chain
-    run_charmm = not options.simple   
+    run_charmm = not options.simple
 
     for file in file_list:
 
         f = open(file,'r')
         pdb = f.readlines()
         f.close()
-        
+
         print "Loading %s" % file
         pdb_id = file[:-4]
         pdb, mutation_string = pdbMutator(pdb,residue,mutation,chain,
                                           run_charmm)
-    
+
         out_file = "%s_%s.pdb" % (pdb_id,mutation_string)
         g = open(out_file,"w")
         g.writelines(pdb)
@@ -192,4 +193,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

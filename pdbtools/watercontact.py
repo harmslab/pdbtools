@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -14,8 +14,8 @@ vdw radii and water radius.
 __author__ = "Michael J. Harms"
 __date__ = "080214"
 
-from helper import geometry
-from pdb_data import common
+from .helper import geometry
+from .data import common
 
 
 def pdbWaterContact(pdb,water_radii=1.4):
@@ -29,7 +29,7 @@ def pdbWaterContact(pdb,water_radii=1.4):
 
     # Grab coordinates and calculate distance matrix
     coord = [[float(l[30+8*i:38+8*i]) for i in range(3)] for l in atoms]
-    dist = geometry.calcDistances(coord)    
+    dist = geometry.calcDistances(coord)
 
     # Grab list of unique residues
     residues = []
@@ -62,7 +62,7 @@ def main():
     import os
     from helper import cmdline
 
-    
+
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="p",
                           long_flag="probe",
@@ -76,7 +76,7 @@ def main():
     file_list, options = cmdline.parseCommandLine()
 
     for pdb_file in file_list:
-        
+
         f = open(pdb_file,'r')
         pdb = f.readlines()
         f.close()
@@ -92,5 +92,3 @@ def main():
 # If run from command line...
 if __name__ == "__main__":
     main()
-        
-

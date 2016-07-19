@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ =\
 """
@@ -17,12 +17,12 @@ __date__ = "070521"
 
 
 import os, sys
-from helper import geometry
+from .helper import geometry
 
 def pdbNeighbors(pdb,distance_cutoff=10,sequence_cutoff=4,residue=None,
                  atom=None,calc_everything=False):
     """
-    Finds number of neighbors for each residue in a pdb and returns a list of 
+    Finds number of neighbors for each residue in a pdb and returns a list of
     residues and a list of number of neighbors.
     """
 
@@ -35,7 +35,7 @@ def pdbNeighbors(pdb,distance_cutoff=10,sequence_cutoff=4,residue=None,
         # Look for Gly CA and use to create fake CB
         if line[17:20] == "GLY" and line[13:16] == "CA ":
             cb_atoms.append("\"CB%s\"" % line[15:26])
-            
+
             n = []; ca = []; co = []
             for i in range(3):
                 n.append(float(pdb[line_counter-1][30+i*8:38+i*8]))
@@ -98,7 +98,7 @@ def pdbNeighbors(pdb,distance_cutoff=10,sequence_cutoff=4,residue=None,
             # If the neighboring atom is close in space, add to counter
             if dist_array[i][j] <= distance_cutoff:
                 num_neighbors[i] += 1
-                
+
     return compare_atoms, num_neighbors
 
 
@@ -144,13 +144,13 @@ def main():
                       action="store_true",
                       default=False,
                       help="find number of CB neighbors for all atoms in pdb")
-    
+
 
     file_list, options = cmdline.parseCommandLine()
 
     out = []
     for pdb_file in file_list:
-    
+
         f = open(pdb_file,'r')
         pdb = f.readlines()
         f.close()
@@ -173,4 +173,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

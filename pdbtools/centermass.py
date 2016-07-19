@@ -2,14 +2,14 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
 pdb_centermass.py
 
 Calculates the center of mass of a protein (assuming all atoms have equal mass).
-Returns either the center or the recentered coordinates of the pdb (if coord 
+Returns either the center or the recentered coordinates of the pdb (if coord
 command line option is specified).
 """
 
@@ -17,30 +17,30 @@ __author__ = "Michael J. Harms"
 __date__ = "061109"
 
 import sys, re
-from pdb_data import common
+from data import common
 
 def pdbCentermass(pdb,write_coord=False,include_hetatm=False,include_mass=True):
     """
-    Calculates center of mass assuming the same mass for all atoms.  Either 
+    Calculates center of mass assuming the same mass for all atoms.  Either
     returns recentered pdb or center of mass.
     """
 
     if include_hetatm:
         grab_lines = ["ATOM  ","HETATM"]
     else:
-        grab_lines = ["ATOM  "] 
+        grab_lines = ["ATOM  "]
 
     # Create a regular expression to strip out charge information from atom type
     # Look for any number or + or -
     charge_pattern = re.compile("[0-9]|\+|\-")
 
-    # Calculate the center of mass of the protein (assuming all atoms have the 
+    # Calculate the center of mass of the protein (assuming all atoms have the
     # same mass).
     warn = False
     coord = []
     masses = []
     for l in pdb:
-        
+
         # Skip non ATOM/HETATM lines
         if l[0:6] not in grab_lines:
             continue
@@ -69,8 +69,8 @@ def pdbCentermass(pdb,write_coord=False,include_hetatm=False,include_mass=True):
         # Strip charge information from atom type
         atom_type = re.sub(charge_pattern,"",atom_type)
 
-        # Now try to grab the mass 
-        try: 
+        # Now try to grab the mass
+        try:
             masses.append(common.ATOM_WEIGHTS[atom_type])
         except:
             print "File contains atoms of unknown type (%s)" % atom_type
@@ -79,9 +79,9 @@ def pdbCentermass(pdb,write_coord=False,include_hetatm=False,include_mass=True):
             masses.append(12.011)
 
     num_atoms = len(coord)
-    
+
     total_mass = sum(masses)
-    weights = [m/total_mass for m in masses] 
+    weights = [m/total_mass for m in masses]
     center = [sum([coord[i][j]*weights[i] for i in range(num_atoms)])
               for j in range(3)]
 
@@ -129,10 +129,10 @@ def main():
                       action="store_true",
                       default=False,
                       help="include hetatms in center of mass calc")
-    
+
 
     file_list, options = cmdline.parseCommandLine()
-   
+
     for pdb_file in file_list:
 
         # Load in pdb file
@@ -155,5 +155,3 @@ def main():
 # If called from command line:
 if __name__ == "__main__":
     main()
-    
-

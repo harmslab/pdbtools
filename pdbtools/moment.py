@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -10,7 +10,7 @@ pdb_moment.py
 
 Calculate the approximate dipole moment of a protein.  This program needs polar
 hydrogens to do its calculation.  The pdb file must be in the slightly non-
-standard (UHBD) format written out by pdb_addH.  Calculation is done assuming 
+standard (UHBD) format written out by pdb_addH.  Calculation is done assuming
 that Asp, Glu, Arg, Lys, and His are fully charged.  Charges are placed on the
 CD, CG, CZ, NZ, and NE2 atoms respectively (see pdb_data/polar_param.txt).
 """
@@ -18,8 +18,8 @@ __author__ = "Michael J. Harms"
 __date__ = ""
 
 import os, sys
-from helper import geometry
-from pdb_data.polar import POLAR_CHARGE_DICT
+from .helper import geometry
+from .data.polar import POLAR_CHARGE_DICT
 from math import pi
 
 class PdbMomentError(Exception):
@@ -37,7 +37,7 @@ def calcMoment(charges,coord):
     # unit conversion
     elementary_q = 1.602176487e-19 # elementary charge in C
     debye_conv = 3.33564e-30       # 1 Debye in C*m
-    k = elementary_q*1e-10/debye_conv  
+    k = elementary_q*1e-10/debye_conv
 
     num_atoms = len(charges)
 
@@ -52,7 +52,7 @@ def calcMoment(charges,coord):
 
 def pdbMoment(pdb):
     """
-    Calculate the dipole moment of a pdb file using the charge set in 
+    Calculate the dipole moment of a pdb file using the charge set in
     pdb_data.polar.
     """
 
@@ -66,9 +66,9 @@ def pdbMoment(pdb):
         err = l
         err += "Residue/atom pair not recognized"
         raise PdbMomentError(err)
-    
+
     coord = [[float(line[30+i*8:38+i*8])for i in range(3)] for line in pdb]
-    
+
     num_atoms = len(charges)
 
     # Center coordinates on center of mass
@@ -97,7 +97,7 @@ def main():
 
     out = []
     for pdb_file in file_list:
-        
+
         f = open(pdb_file,'r')
         pdb = f.readlines()
         f.close()
@@ -111,16 +111,16 @@ def main():
             # If not in the correct format, try to add hydrogens
             print "%s does not appear to have polar hydrogens!" % pdb_file
             if options.addH:
-                
+
                 import pdb_addH
 
                 print "Attempting to add hydrogens with pdb_addH.py"
                 try:
                     pdb = pdb_addH.pdbAddH(pdb,pdb_id=pdb_file[:-4])
-       
+
                     g = open("%sH.pdb" % pdb_file[:-4],"w")
                     g.writelines(pdb)
-                    g.close() 
+                    g.close()
 
                 except pdb_addH.PdbAddHError, (strerror):
                     print "Addition of hydrogens failed for %s" % file
@@ -150,7 +150,7 @@ def main():
     out = ["%10i%s\n" % (i,x) for i, x in enumerate(out)]
     out.insert(0,"%10s%30s%10s%10s%10s%10s\n" %
                (" ","pdb","x","y","z","length"))
-    
+
     print "".join(out)
 
 
@@ -158,5 +158,3 @@ def main():
 if __name__ == "__main__":
 
     main()
-        
-

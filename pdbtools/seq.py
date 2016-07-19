@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -15,7 +15,7 @@ __author__ = "Michael J. Harms"
 __date__ = "080123"
 
 import os
-from pdb_data.common import *
+from .data.common import *
 
 class PdbSeqError(Exception):
     """
@@ -27,7 +27,7 @@ class PdbSeqError(Exception):
 
 def pdbSeq(pdb,use_atoms=False):
     """
-    Parse the SEQRES entries in a pdb file.  If this fails, use the ATOM 
+    Parse the SEQRES entries in a pdb file.  If this fails, use the ATOM
     entries.  Return dictionary of sequences keyed to chain and type of
     sequence used.
     """
@@ -51,13 +51,13 @@ def pdbSeq(pdb,use_atoms=False):
         # at the first model.
         models = [i for i, l in enumerate(pdb) if l.startswith("MODEL")]
         if len(models) > 1:
-            pdb = pdb[models[0]:models[1]]     
+            pdb = pdb[models[0]:models[1]]
 
         # Grab all CA from ATOM entries, as well as MSE from HETATM
         atoms = []
         for l in pdb:
             if l[0:6] == "ATOM  " and l[13:16] == "CA ":
-                    
+
                 # Check to see if this is a second conformation of the previous
                 # atom
                 if len(atoms) != 0:
@@ -79,7 +79,7 @@ def pdbSeq(pdb,use_atoms=False):
         for c in chain_dict.keys():
             chain_dict[c] = [l[17:20] for l in atoms if l[21] == c]
 
-    return chain_dict, seq_type 
+    return chain_dict, seq_type
 
 
 def convertModifiedAA(chain_dict,pdb):
@@ -142,7 +142,7 @@ def pdbSeq2Fasta(pdb,pdb_id="",chain="all",use_atoms=False):
         # Write output in lines 80 characters long
         seq_length = len(chain_dict[c])
         num_lines = seq_length / 80
-        
+
         for i in range(num_lines+1):
             out.append("".join([aa for aa in chain_dict[c][80*i:80*(i+1)]]))
             out.append("\n")
@@ -151,8 +151,8 @@ def pdbSeq2Fasta(pdb,pdb_id="",chain="all",use_atoms=False):
 
 
     return "".join(out)
-      
-            
+
+
 def main():
     """
     Function to execute if called from command line.
@@ -175,26 +175,24 @@ def main():
                       action="store_true",
                       default=False,
                       help="use ATOM sequence, not SEQRES")
-    
+
 
     file_list, options = cmdline.parseCommandLine()
 
     # Extract sequence data
     for pdb_file in file_list:
-    
+
         pdb_id = os.path.split(pdb_file)[-1][:-4]
-        
+
         f = open(pdb_file,'r')
         pdb = f.readlines()
         f.close()
-        
+
         seq = pdbSeq2Fasta(pdb,pdb_id,options.chain,options.atomseq)
 
         print seq
-    
+
 
 
 if __name__ == "__main__":
     main()
-
-

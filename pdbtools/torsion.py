@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -13,7 +13,7 @@ __author__ = "Michael J. Harms"
 __date__ = "070601"
 
 import os, sys
-from helper import cmdline, geometry
+from .helper import cmdline, geometry
 
 def pdbTorsion(pdb):
     """
@@ -36,7 +36,7 @@ def pdbTorsion(pdb):
                 # First residue
                 if current_residue == None:
                     current_residue = line[17:26]
-               
+
                 # If we're switching to a new residue, record the previously
                 # recorded one.
                 if current_residue != line[17:26]:
@@ -60,13 +60,13 @@ def pdbTorsion(pdb):
 
                 # Now record N, C, and CA entries.  Take only a unique one from
                 # each residue to deal with multiple conformations etc.
-                if not resid_contents.has_key(line[13:16]): 
+                if not resid_contents.has_key(line[13:16]):
                     resid_contents[line[13:16]] = line
                 else:
-                    err = "Warning: %s has repeated atoms!\n" % current_residue 
+                    err = "Warning: %s has repeated atoms!\n" % current_residue
                     sys.stderr.write(err)
-      
-    # Record the last residue            
+
+    # Record the last residue
     try:
         N.append([float(resid_contents["N  "][30+8*i:39+8*i])
                   for i in range(3)])
@@ -80,7 +80,7 @@ def pdbTorsion(pdb):
         err = "Residue %s has missing atoms: skipping.\n" % current_residue
         sys.stderr.write(err)
 
-        
+
     # Calculate phi and psi for each residue.  If the calculation fails, write
     # that to standard error and move on.
     labels = []
@@ -118,19 +118,18 @@ def main():
         dihedrals, labels = pdbTorsion(pdb)
 
         # Print out results in pretty fashion
-        short_pdb =  os.path.split(pdb_file)[-1][:-4] 
+        short_pdb =  os.path.split(pdb_file)[-1][:-4]
         for i in range(len(dihedrals)):
             out.append("%30s%4s \"%s\"%10.2F%10.2F\n" %\
                        (short_pdb,labels[i][:3],labels[i][4:],
                         dihedrals[i][0],dihedrals[i][1]))
 
     out = ["%10i%s" % (i,x) for i, x in enumerate(out)]
-    
+
     header = "%10s%30s%4s%8s%10s%10s\n" % (" ","pdb","aa","res","phi","psi")
     out.insert(0,header)
-    print "".join(out) 
+    print "".join(out)
 
 
 if __name__ == "__main__":
     main()
-

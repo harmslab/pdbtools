@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -15,11 +15,11 @@ __author__ = "Michael J. Harms"
 __date__ = ""
 
 import os, sys
-from helper import geometry
+from .helper import geometry
 
 def pdbContact(pdb,all=False):
     """
-    Generate array of all atom-atom distances in a pdb file.  Defaults to only 
+    Generate array of all atom-atom distances in a pdb file.  Defaults to only
     look at CA atoms
     """
 
@@ -33,7 +33,7 @@ def pdbContact(pdb,all=False):
 
     dist = geometry.calcDistances(coord)
 
-    return dist    
+    return dist
 
 def main():
     """
@@ -42,7 +42,7 @@ def main():
 
     from helper import cmdline
 
-    
+
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="a",
                           long_flag="all",
@@ -66,7 +66,7 @@ def main():
         if not os.path.isfile(options.difference):
             print "\"%s\" is not a file!" % options.difference
             sys.exit()
-        
+
         f = open(options.difference,'r')
         pdb = f.readlines()
         f.close()
@@ -75,7 +75,7 @@ def main():
 
 
     for pdb_file in file_list:
-        
+
         f = open(pdb_file,'r')
         pdb = f.readlines()
         f.close()
@@ -94,11 +94,11 @@ def main():
         out.append("# Distance contact map for \"%s\".\n" % pdb_file)
         if options.difference != None:
             out.append("# Difference map to \"%s\".\n" % options.difference)
-            out.append("#%9s%10s%10s%10s%10s%10s%10s\n" % 
+            out.append("#%9s%10s%10s%10s%10s%10s%10s\n" %
                        ("atom1","atom2","d12","d12_r","dd12","mean","d/m"))
         else:
             out.append("#%9s%10s%10s\n" %  ("atom1","atom2","d12"))
-                        
+
         for i in range(len(dist)):
             for j in range(len(dist)):
                 out.append("%10i%10i%10.3F" % (i,j,dist[i][j]))
@@ -111,14 +111,14 @@ def main():
                     else:
                         d_m = 0
 
-                    out.append("%10.3F%10.3F%10.3F%10.3F\n" % 
+                    out.append("%10.3F%10.3F%10.3F%10.3F\n" %
                                (to_compare[i][j],d,mean,d_m))
                 else:
                     out.append("\n")
-                               
+
             out.append("\n")
         out = "".join(out)
-                
+
         short_pdb = os.path.split(pdb_file)[-1][:-4]
         g = open("%s_contact.txt" % short_pdb,'w')
         g.write(out)
@@ -128,5 +128,3 @@ def main():
 # If run from command line...
 if __name__ == "__main__":
     main()
-        
-

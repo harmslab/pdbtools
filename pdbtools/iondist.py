@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -15,21 +15,21 @@ interactions.
 __author__ = "Michael J. Harms"
 __date__ = "080303"
 
-from pdb_data.common import CHARGE_DICT, TITR_ATOM
-from helper.geometry import calcDistances
+from .data.common import CHARGE_DICT, TITR_ATOM
+from .helper.geometry import calcDistances
 
 def pdbIonDist(pdb,hist_step,remove_resid="TYR"):
     """
     Calculate ij distances between all titratable atoms in pdb (except residues
-    in skip_resid) then bin according to hist_step.  The output histogram is 
-    a 3 x N nested list where N is the length required to cover all distances 
-    in pdb using hist_step and the 3 overarching lists hold acid/acid, 
-    acid/base, and base/base interactions in 0, 1, and 2 respectively.  
+    in skip_resid) then bin according to hist_step.  The output histogram is
+    a 3 x N nested list where N is the length required to cover all distances
+    in pdb using hist_step and the 3 overarching lists hold acid/acid,
+    acid/base, and base/base interactions in 0, 1, and 2 respectively.
     """
 
-    pdb = [l for l in pdb if l[0:4] == "ATOM"] 
+    pdb = [l for l in pdb if l[0:4] == "ATOM"]
     titr_atom = [l for l in pdb
-                 if l[17:20] not in remove_resid and 
+                 if l[17:20] not in remove_resid and
                     l[17:20] in TITR_ATOM.keys() and
                     l[13:16] == TITR_ATOM[l[17:20]]]
 
@@ -60,7 +60,7 @@ def pdbIonDist(pdb,hist_step,remove_resid="TYR"):
             histogram[interaction_type][dist_bin] += 1
 
     return histogram
- 
+
 def main():
     """
     Function to call if run from command line.
@@ -68,7 +68,7 @@ def main():
 
     from helper import cmdline
 
-    
+
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="s",
                           long_flag="step",
@@ -83,14 +83,14 @@ def main():
 
     histogram = [[] for i in range(3)]
     for pdb_file in file_list:
-        
+
         f = open(pdb_file,'r')
         pdb = f.readlines()
         f.close()
 
         tmp_hist = pdbIonDist(pdb,options.step)
 
-        # If the new histogram is longer than the total histogram, expand the 
+        # If the new histogram is longer than the total histogram, expand the
         # total histogram to take the new data
         if len(tmp_hist[0]) > len(histogram[0]):
             diff = len(tmp_hist[0]) - len(histogram[0])
@@ -111,11 +111,9 @@ def main():
 
 
     print "".join(out)
-    
+
 
 
 # If run from command line...
 if __name__ == "__main__":
     main()
-        
-

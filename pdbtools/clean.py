@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -14,9 +14,9 @@ __author__ = "Michael J. Harms"
 __date__ = "070727"
 
 import sys, time, string, os, shutil
-import pdb_atom_renumber, charmm.interface
-from helper import container
-from pdb_data.common import *
+import .pdb_atom_renumber, charmm.interface
+from .helper import container
+from .data.common import *
 
 class PdbCleanError(Exception):
     """
@@ -31,7 +31,7 @@ def pdbCheck(coord):
     """
 
     pdb_check = len([l for l in coord if l[0:6] == "ATOM  "])
-    
+
     if pdb_check > 0:
         return 0
     else:
@@ -70,7 +70,7 @@ def convertModifiedAA(coord,header):
     for line in header:
         if line[0:6] == "SEQRES":
             old_seq = line[19:70].split()
-            new_seq = []   
+            new_seq = []
             for aa in old_seq:
                 if aa in mod_dict.keys():
                     new_seq.append(mod_dict[aa])
@@ -80,7 +80,7 @@ def convertModifiedAA(coord,header):
             new_seq = "".join(["%s " % aa for aa in new_seq])
             new_seq.strip()
             new_seq = "%-50s" % new_seq
-       
+
             new_header.append("%s%-50s%s" % (line[:19],new_seq,line[71:]))
         else:
             new_header.append(line)
@@ -125,8 +125,8 @@ def stripACS(coord):
             coord_out.append(out)
             known_atom_dict.update([(residue,[c[13:16]])])
 
-        # If the residue is known, determine if the atom has been seen before.  
-        # If it has, skip it.  Otherwise, append to coord_out and 
+        # If the residue is known, determine if the atom has been seen before.
+        # If it has, skip it.  Otherwise, append to coord_out and
         # known_atom_dict
         else:
             atom = c[13:16]
@@ -136,21 +136,21 @@ def stripACS(coord):
                 out = removeLetters(c)
                 coord_out.append(out)
                 known_atom_dict[residue].append(atom)
-     
+
     return coord_out, skipped
 
 
 def backboneCheck(coord):
     """
-    Checks for duplicate residues (fatal) and missing backbone atoms.  If a 
+    Checks for duplicate residues (fatal) and missing backbone atoms.  If a
     backbone atom is missing, the entire containing residue is deleted.
     """
 
     residue_numbers = []
     for line in coord:
         if line[17:26] not in residue_numbers:
-            residue_numbers.append(line[17:26]) 
-        
+            residue_numbers.append(line[17:26])
+
     to_remove = []
     for resid in residue_numbers:
         resid_atoms = [l for l in coord if l[17:26] == resid]
@@ -174,7 +174,7 @@ def backboneCheck(coord):
                 raise PdbCleanError(err)
             if len(b) == 0:
                 to_remove.append(resid)
-                
+
     coord = [l for l in coord if l[17:26] not in to_remove]
     removed = ["REMARK       removed %s\n" % r for r in to_remove]
 
@@ -183,16 +183,16 @@ def backboneCheck(coord):
 
 def addMissingAtoms(coord,seqres,keep_temp=False,renumber_residues=False,
                     pdb_id="",fix_atoms=True,num_steps=500):
-    
+
     # Grab the b-factor and occupancy columns
     bfact_occ = dict([(l[13:26],l[54:67]) for l in coord])
-    
+
     # Load pdb into pdb object to renumber for CHARMM
     pdb_obj = container.Structure("tmp",seqres,coord)
     pdb_obj.renumberAtoms()
     pdb_obj.dumpNumberConversion("numbering_conversion.txt")
     structure_list = pdb_obj.dumpStructures()
-    
+
     # Do a charmm run to add missing atoms.
     try:
         new_coord = charmm.interface.charmmWash(structure_list,
@@ -203,7 +203,7 @@ def addMissingAtoms(coord,seqres,keep_temp=False,renumber_residues=False,
 
     # Remove hydrogens
     new_coord = [l for l in new_coord if l[12] != "H" and l[13] != "H"]
-    
+
     # Place charmm coordinates into new pdb container, and load in old numbering
     new_pdb = container.Structure("tmp",[],new_coord)
     if renumber_residues:
@@ -213,24 +213,24 @@ def addMissingAtoms(coord,seqres,keep_temp=False,renumber_residues=False,
         new_pdb.loadNumberConversion("numbering_conversion.txt","fixed")
         new_pdb.renumberAtoms()
         os.remove("numbering_conversion.txt")
-   
+
     # Add bfactors, occupancies, and TER entries back in
     out = []
     for chain in new_pdb.chains:
         chain_atoms = chain.atom_lines
-        
+
         for l in chain_atoms:
             try:
                 out.append(3*"%s" % (l[:54],bfact_occ[l[13:26]],l[67:]))
             except KeyError:
                 out.append(3*"%s" % (l[:54],"  1.00  1.00",l[67:]))
-        
+
         ter = chain_atoms[-1]
         ter = "%s%s%54s\n" % ("TER   ",ter[6:26]," ")
         out.append(ter)
-    
+
     out.append("%-80s\n" % "END")
-    
+
     return out
 
 def pdbClean(pdb,pdb_id="temp",chains="all",renumber_residues=False,
@@ -241,7 +241,7 @@ def pdbClean(pdb,pdb_id="temp",chains="all",renumber_residues=False,
         - Convert modified residues (i.e. Se-Met) to the normal residue
         - Remove alternate conformations (taking first in pdb file)
         - Find and remove residues with missing backbone atoms
-        - 
+        -
         - Take only the specified chain
         - Renumber residues from 1
     """
@@ -259,7 +259,7 @@ def pdbClean(pdb,pdb_id="temp",chains="all",renumber_residues=False,
 
     # Grab pdb header, excluding coordinates and deprecated records.
     header = [l for l in pdb if l[0:6] not in COORD_RECORDS]
-    
+
     # Convert non-standard amino acids to standard ones
     coord = [l for l in pdb if l[0:6] in COORD_RECORDS]
     coord, header, converted = convertModifiedAA(coord,header)
@@ -274,13 +274,13 @@ def pdbClean(pdb,pdb_id="temp",chains="all",renumber_residues=False,
     # Strip all entries in COORD_RECORDS except ATOM
     coord = [l for l in coord if l[0:6] == "ATOM  "]
     if pdbCheck(coord):
-        err = "There are no ATOM entries in this pdb file!" 
+        err = "There are no ATOM entries in this pdb file!"
         raise PdbCleanError(err)
     else:
         log.append(log_fmt % "HETATM entries removed.")
         print log[-1],
 
-    # Grab only the chain we want, if specified 
+    # Grab only the chain we want, if specified
     if chains != "all":
         coord = [l for l in coord if l[21] in chains]
         log.append(log_fmt % ("Took only chain %r." % chains))
@@ -289,7 +289,7 @@ def pdbClean(pdb,pdb_id="temp",chains="all",renumber_residues=False,
             err = "Chain filter (%r) removed all atoms in pdb file!" % chains
             raise PdbCleanError(err)
 
-    # Strip alternate conformations 
+    # Strip alternate conformations
     coord, skipped = stripACS(coord)
     if len(skipped) != 0:
         log.append(log_fmt % "Alternate conformations were removed.")
@@ -308,19 +308,19 @@ def pdbClean(pdb,pdb_id="temp",chains="all",renumber_residues=False,
     if pdbCheck(coord):
         err = "Backbone checker removed all atoms!  Mangled pdb file."
         raise PdbCleanError(err)
-    
+
     # Add missing atoms using CHARMM
     print log_fmt % "Adding heavy atoms using CHARMM.",
     seqres = [l for l in header if l[0:6] == "SEQRES"]
     coord = addMissingAtoms(coord,seqres,keep_temp,renumber_residues,pdb_id,
                             fix_atoms,num_steps)
     log.append(log_fmt % "Missing heavy atoms were added with CHARMM.")
-    
+
     # Renumber residues if requested
     if renumber_residues:
         log.append(log_fmt % "Residues renumbered from one.")
         print log[-1],
-        
+
     # Renumber atoms from 1
     coord = pdb_atom_renumber.pdbAtomRenumber(coord)
     log.append(log_fmt % "Renumbered atoms from 1")
@@ -330,7 +330,7 @@ def pdbClean(pdb,pdb_id="temp",chains="all",renumber_residues=False,
     coord = ["%s           %s  \n" % (c[:66],c[13]) for c in coord]
     log.append(log_fmt % "Atom types were standardized.")
     print log[-1],
-    
+
     # Final check
     if pdbCheck(coord):
         err = "Unknown error occured and pdb has been mangled!"
@@ -357,7 +357,7 @@ def main():
     """
 
     from helper import cmdline
-    
+
     # Parse command line
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="c",
@@ -391,7 +391,7 @@ def main():
                       long_flag="fix_atoms",
                       action="store_false",
                       default=True,
-                      help="fix atoms in original file")   
+                      help="fix atoms in original file")
     cmdline.addOption(short_flag="n",
                       long_flag="num_steps",
                       action="store",
@@ -399,27 +399,27 @@ def main():
                       help="number of minimization steps",
                       nargs=1)
 
- 
-    file_list, options = cmdline.parseCommandLine()    
-   
+
+    file_list, options = cmdline.parseCommandLine()
+
     # Parse command line options
     if options.chains == None:
         chains = "all"
     else:
         chains = cmdline.readFile(options.chains)
-    
+
     suffix = options.out_suffix
     renumber_residues = options.renumber_residues
     keep_temp = options.keep_temp
-    fix_atoms = options.fix_atoms 
-    num_steps = options.num_steps   
- 
+    fix_atoms = options.fix_atoms
+    num_steps = options.num_steps
+
     for pdb_file in file_list:
 
         f = open(pdb_file,'r')
         pdb = f.readlines()
         f.close()
-        
+
         print "Loading %s" % pdb_file
         pdb_id = pdb_file[:-4]
 
@@ -447,4 +447,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
