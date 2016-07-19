@@ -13,6 +13,14 @@ Most of the scripts will run "out of the box" using a python interpreter.  The c
 
 *Note:* These scripts are only compatible with Python version 2.4-2.7.
 
+## Installation
+
+Install the development version by cloning this repo and running `pip`:
+```
+pip install -e .
+```
+from inside the package.
+
 ##Current functions
 
 ###Miscellaneous

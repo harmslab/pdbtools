@@ -15,6 +15,5 @@ setup(name='pdbtools',
       author='Michael J. Harms',
       author_email='harms@uoregon.edu',
       packages=['pdbtools'],
-      install_requires=[
-      ],
+      #install_requires=[],
       zip_safe=False)
