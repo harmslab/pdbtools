@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 """
 pdb_download.py
@@ -62,7 +62,7 @@ def pdbDownload(file_list,hostname=HOSTNAME,directory=DIRECTORY,prefix=PREFIX,
         try:
             ftp.retrbinary("RETR %s" % to_get[i],open(to_write[i],"wb").write)
             final_name = "%s.pdb" % to_write[i][:to_write[i].index(".")]
-            unZip(to_write[i],final_name) 
+            unZip(to_write[i],final_name)
             print "%s retrieved successfully." % final_name
         except ftplib.error_perm:
             os.remove(to_write[i])
@@ -74,52 +74,5 @@ def pdbDownload(file_list,hostname=HOSTNAME,directory=DIRECTORY,prefix=PREFIX,
 
     if success:
         return True
-    else: 
+    else:
         return False
-
-
-def main():
-    """
-    If the function is called from the command line.
-    """
-
-    try:
-        file_input = sys.argv[1:]
-    except IndexError:
-        print __usage__
-        sys.exit()
-
-    pdb_list = []
-    for arg in file_input:
-        if os.path.isfile(arg) and arg[-4:] != ".pdb":
-
-            # Read in input file
-            f = open(arg,"r")
-            tmp_list = f.readlines()
-            f.close()
-        
-            # Strip comments and blank lines, recombine file, then split on all 
-            # white space
-            tmp_list = [p for p in tmp_list if p[0] != "#" and p.strip() != ""]
-            tmp_list = "".join(tmp_list)
-            tmp_list = tmp_list.split()
-            tmp_list = [p.lower() for p in tmp_list]
-            pdb_list.extend(tmp_list)
-       
-        else:
-            
-            # Lower case, remove .pdb if appended
-            pdb_id = arg.lower()
-            if pdb_id[-4:] == ".pdb":
-                pdb_id = pdb_id[:-4]
-
-            pdb_list.append(pdb_id)
-
-    # Download pdbs
-    pdbDownload(pdb_list)
-        
-
-if __name__ == "__main__":
-    main()
-
-

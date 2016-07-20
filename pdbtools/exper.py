@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -60,9 +60,9 @@ def pdbExperiment(pdb):
             fit_start = fit_hash.index("USING DATA ABOVE SIGMA CUTOFF.")
         fit_end = fit_hash[fit_start:].index("                              ")
         fit_remarks = remarks[fit_start:fit_start+fit_end]
-       
+
         # Extract R-value (note that we take the *last* possible R-value in case
-        # the first R-value is working + test set) 
+        # the first R-value is working + test set)
         try:
             r_value = [l for l in fit_remarks
                        if l[13:25] == "R VALUE     "][-1]
@@ -70,8 +70,8 @@ def pdbExperiment(pdb):
             r_value = "%10.1F" % (100*float(r_value))
         except (IndexError,ValueError):
             r_value = "%10s" % "NA"
-       
-        # Extract R-free 
+
+        # Extract R-free
         try:
             r_free = [l for l in fit_remarks
                       if l[13:30] == "FREE R VALUE     "][0]
@@ -83,42 +83,3 @@ def pdbExperiment(pdb):
     exp_data = "%48s%40s%5s%s%s%s" % (header,organism,exp_type,resolution,r_value,r_free)
 
     return exp_data.lower()
-
-def main():
-    """
-    Function to call if run from command line.
-    """
-
-    from helper import cmdline
-
-    
-    cmdline.initializeParser(__description__,__date__)
-
-    file_list, options = cmdline.parseCommandLine()
-
-    out = []
-    for pdb_file in file_list:
-        
-        f = open(pdb_file,'r')
-        pdb = f.readlines()
-        f.close()
-
-        exp_data = pdbExperiment(pdb)
-        
-        pdb_id = pdb_file[:pdb_file.index(".pdb")]
-        pdb_id = os.path.split(pdb_id)[-1] 
-
-        out.append("%30s%s" % (pdb_id,exp_data))
-
-    out = ["%10i%s\n" % (i,x) for i, x in enumerate(out)]
-    out.insert(0,"%10s%30s%48s%40s%5s%10s%10s%10s\n" % (" ","pdb","protein",
-               "organism","exp","res","r_value","r_free"))
-    
-    print "".join(out)
-
-
-# If run from command line...
-if __name__ == "__main__":
-    main()
-        
-

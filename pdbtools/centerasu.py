@@ -48,9 +48,9 @@ def pdbCenterasu(pdb, write_coord =False):
         if line.startswith('SCALE'):
             data = map(float, line[6:].split()[:-1])
             fmx.append(data)
-    
+
     if len(fmx) == 0:
-        err = "No SCALE records found in pdb file!\n"    
+        err = "No SCALE records found in pdb file!\n"
         raise PdbCenterAsuError(err)
 
     fmx = array(fmx)
@@ -77,43 +77,3 @@ def pdbCenterasu(pdb, write_coord =False):
         coord += 1
 
     return fvector, pdb_out
-
-
-def main():
-    """
-    If called from command line...
-    """
-
-    from helper import cmdline
-
-    # Parse command line
-    cmdline.initializeParser(__description__,__date__)
-    cmdline.addOption(short_flag="c",
-                      long_flag="coord",
-                      action="store_true",
-                      default=False,
-                      help="write out PDB file with re-centered ASU")
-    file_list, options = cmdline.parseCommandLine()
-
-    for pdb_file in file_list:
-
-        # Load in pdb file
-        f = open(pdb_file,'r')
-        pdb = f.readlines()
-        f.close()
-
-        translation, pdb_out = pdbCenterasu(pdb, options.coord)
-        print "%s %s" % (pdb_file, tuple(translation.ravel()))
-        # If the user wants re-centered PDB files, write them out
-        if options.coord:
-            out_file = "%s_asucenter.pdb" % pdb_file[:-4]
-            g = open(out_file,'w')
-            g.writelines(pdb_out)
-            g.close()
-
-
-# If called from command line:
-if __name__ == "__main__":
-    main()
-
-

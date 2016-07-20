@@ -2,7 +2,7 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -31,34 +31,5 @@ def splitNMR(pdb):
     for i in range(1,len(pdb_splitter)):
         all_models.append((model_numbers[i-1],
                            pdb[pdb_splitter[i-1]:pdb_splitter[i]]))
-       
-    return all_models 
 
-def main():
-    """
-    Function to call if run from commmand line.
-    """
-
-    from helper import cmdline
-    cmdline.initializeParser(__description__,__date__)
-    file_list, options = cmdline.parseCommandLine()
-    
-    for pdb_file in file_list:
-
-        f = open(pdb_file,'r')
-        pdb = f.readlines()
-        f.close()
-
-        models = splitNMR(pdb)
-        
-        short_pdb = os.path.split(pdb_file)[-1][:-4]
-        for model in models:
-            index = model[0]
-            pdb_lines = model[1]
-            g = open("%s_%s.pdb" % (short_pdb,index),"w")
-            g.writelines(pdb_lines)
-            g.close()
-
-if __name__ == "__main__":
-    main()
-
+    return all_models

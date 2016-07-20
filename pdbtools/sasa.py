@@ -2,14 +2,14 @@
 
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
 pdb_sasa.py
 
 Calculate the solvent accessible surface area of every atom in a protein using
-NACCESS. 
+NACCESS.
 """
 __author__ = "Michael J. Harms"
 __date__ = "080129"
@@ -44,7 +44,7 @@ def runNaccess(pdb_file,probe=1.4,z_sample=0.05,vdw_file=None,keep_temp=False):
 
     shutil.copy(pdb_file,tmp_dir)
     os.chdir(tmp_dir)
-    
+
     # Actually run naccess
     args = ['naccess',pdb_file,"-p","%.2F" % probe,"-z","%.2F" % z_sample]
     if vdw_file != None:
@@ -73,7 +73,7 @@ def runNaccess(pdb_file,probe=1.4,z_sample=0.05,vdw_file=None,keep_temp=False):
 
     return out
 
-    
+
 def readStandards(standard_dir=None,probe_radius=1.4,z_sample=0.05,
                   vdw_file=None):
     """
@@ -97,14 +97,14 @@ def readStandards(standard_dir=None,probe_radius=1.4,z_sample=0.05,
     standards = {}
     standard_list = [f for f in os.listdir('.') if f[-4:] == ".pdb"]
     for pdb in standard_list:
-       
+
         residue_standard = runNaccess(pdb,probe_radius,z_sample,vdw_file)
         residue_standard = [l for l in residue_standard if l[10:13] == "  3"]
 
         residue_name = residue_standard[0][4:7]
         residue_sasa = dict([(l[0:3],float(l[13:])) for l in residue_standard])
-       
-        standards.update([(residue_name,copy.deepcopy(residue_sasa))]) 
+
+        standards.update([(residue_name,copy.deepcopy(residue_sasa))])
 
     # Return to working directory
     os.chdir(current_dir)
@@ -140,7 +140,7 @@ def pdbSASA(pdb_file,probe_radius=1.4,z_sample=0.05,vdw_file=None,
 
     out = []
     for atom in all_atoms:
-        
+
         absolute = float(atom[13:])
         try:
             absolute_peptide = standards[atom[4:7]][atom[:3]]
@@ -155,79 +155,3 @@ def pdbSASA(pdb_file,probe_radius=1.4,z_sample=0.05,vdw_file=None,
                    (atom_type,resid_type,residue,absolute,fractional))
 
     return out
-
-
-def main():
-    """
-    Function to call if run from command line.
-    """
-
-    from helper import cmdline
-
-    cmdline.initializeParser(__description__,__date__)
-    cmdline.addOption(short_flag="p",
-                      long_flag="probe_radius",
-                      action="store",
-                      default=1.4,
-                      help="specify probe radius (A)",
-                      nargs=1,
-                      type=float)
-    cmdline.addOption(short_flag="z",
-                      long_flag="z_sample",
-                      action="store",
-                      default=0.05,
-                      help="fraction of atom radius to sample on z",
-                      nargs=1,
-                      type=float)
-    cmdline.addOption(short_flag="v",
-                      long_flag="vdw_file",
-                      action="store",
-                      default=None,
-                      help="specify custom vdw file",
-                      nargs=1,
-                      type=str)
-    cmdline.addOption(short_flag="d",
-                      long_flag="standard_dir",
-                      action="store",
-                      default=None,
-                      help="specify location of custom standards directory",
-                      nargs=1,
-                      type=str)
-    cmdline.addOption(short_flag="k",
-                      long_flag="keep_temp",
-                      action="store_true",
-                      default=False,
-                      help="keep temporary files")
-
-    file_list, options = cmdline.parseCommandLine()
-
-    print "Generating standards."
-    standards = readStandards(options.standard_dir,options.probe_radius,
-                              options.z_sample,options.vdw_file)
-
-    for pdb_file in file_list:
-        
-        out = pdbSASA(pdb_file,options.probe_radius,options.z_sample,
-                      options.vdw_file,options.keep_temp,standards)
-        out = ["%10i%s" % (i,x) for i, x in enumerate(out)]
-
-        out.insert(0,"%10s%10s%10s%12s%10s%10s\n" % \
-                   (" ","atom","type","residue","abs","fract"))
-        
-        header = ["# Custom standards: %s\n" % options.standard_dir,
-                  "# Custom radii file: %s\n" % options.vdw_file,
-                  "# Probe radius: %.2F\n" % options.probe_radius,
-                  "# Z-sampling: %.2F\n" % options.z_sample]
-        out.insert(0,"".join(header))
-
-              
-        out_file = "%s_sasa.txt" % pdb_file[:-4]
-        f = open(out_file,'w')
-        f.writelines(out)
-        f.close() 
-         
-
-# If run from command line...
-if __name__ == "__main__":
-    main()
-
