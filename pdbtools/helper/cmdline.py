@@ -1,6 +1,6 @@
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -11,12 +11,12 @@ files (either single file or taken from directory) and a dictionary of option
 values.
 """
 __author__ = "Michael J. Harms"
-__usage__ = "[options] pdb files and directories with pdb files" 
+__usage__ = "[options] pdb files and directories with pdb files"
 __date__ = "080422"
 
 # Load builtin modules
 import sys, os
-import pdb_download
+import ..download
 
 try:
     from optparse import OptionParser
@@ -57,7 +57,7 @@ def parseArgs(args):
 
     file_list = []
     to_download = []
-    
+
     for arg in args:
 
         # If it is already a file, append it
@@ -69,7 +69,7 @@ def parseArgs(args):
                 inp_file = g.readlines()
                 g.close()
 
-                # Strip comments and blank lines 
+                # Strip comments and blank lines
                 inp_file = [l for l in inp_file
                             if l[0] != "#" and l.strip() != ""]
 
@@ -89,14 +89,14 @@ def parseArgs(args):
 
                 file_list.extend(tmp_file)
                 to_download.extend(tmp_download)
-                    
+
         # If it is a directory, check for pdb files in that directory
         elif os.path.isdir(arg):
             tmp_list = os.listdir(arg)
             tmp_list = [f for f in tmp_list if f[-4:] == ".pdb"]
             tmp_list = [os.path.join(arg,f) for f in tmp_list]
             file_list.extend(tmp_list)
-        
+
         # If it is not file or directory, see if it is a pdb id.  If the
         # file does not exist, try do download it from rcsb.
         else:
@@ -126,14 +126,14 @@ def parseCommandLine():
         parser.error(err)
     else:
         file_list, to_download = parseArgs(args)
-           
+
     # Download missing pdb files
     if len(to_download) > 0:
         to_download.sort()
         if pdb_download.pdbDownload(to_download):
             file_list.extend(["%s.pdb" % f for f in to_download])
         else:
-            err = "pdb could not be found on rcsb!" 
+            err = "pdb could not be found on rcsb!"
             parser.error(err)
 
     # Remove duplicates from file_list by placing in dictionary
@@ -149,7 +149,7 @@ def readFile(some_file):
     Reads an ascii file if it exists, removes blank lines, whitespace, and
     comments (denoted by #).  It then splits values by whitespace, giving a list
     of all values in the file.
-    
+
     Example:
         The file:
         1 2 3
@@ -158,8 +158,8 @@ def readFile(some_file):
         6 7
         Gives:
         ['1','2','3','4','5','6','7']
-    
-    """    
+
+    """
 
     # Make sure the file is truly a file
     if os.path.isfile(some_file):
@@ -177,7 +177,6 @@ def readFile(some_file):
         values = values.split()
 
         return values
-    
+
     else:
         raise IOError("%s does not exist" % some_file)
-

@@ -1,6 +1,6 @@
 # Copyright 2007, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
-# COPYING for a copy of the license.  
+# COPYING for a copy of the license.
 
 __description__ = \
 """
@@ -18,7 +18,7 @@ def dist(c1,c2=[0.,0.,0.]):
     Calculate the distance between two coordinates in 3d space.  If no c2 is
     specified it returns the length of the vector.
     """
-        
+
     return sqrt(sum([(c1[i] - c2[i])**2 for i in range(3)]))
 
 def dist_sq(c1,c2=[0.,0.,0.]):
@@ -26,14 +26,14 @@ def dist_sq(c1,c2=[0.,0.,0.]):
     Calculate the squared distance between two coordinates in 3d space.  If no
     c2 is specified it returns the squared length of the vector.
     """
-        
+
     return sum([(c1[i] - c2[i])**2 for i in range(3)])
 
 def calcDistances(coord):
     """
     Calculate all distances in coord.
     """
-    
+
     num_points = len(coord)
     d = [[0. for j in range(num_points)] for i in range(num_points)]
     for i in xrange(num_points):
@@ -53,7 +53,7 @@ def crossProduct(u,v):
     prod[0] = u[1]*v[2]-u[2]*v[1]
     prod[1] = u[2]*v[0]-u[0]*v[2]
     prod[2] = u[0]*v[1]-u[1]*v[0]
-    
+
     return prod
 
 def dotProduct(u,v):
@@ -68,10 +68,10 @@ def findAngle(u,v):
     Calculates the angle (degrees) between two vectors (as 1-d arrays) using
     dot product.
     """
-    
+
     mag_u = sqrt(u[0]**2 + u[1]**2 + u[2]**2)
     mag_v = sqrt(v[0]**2 + v[1]**2 + v[2]**2)
-    
+
     return 180/pi * acos(dotProduct(u,v)/(mag_u*mag_v))
 
 def genRotMatrix(axis,theta):
@@ -108,8 +108,8 @@ def arbRot(vector,axis,theta):
     Rotates a vector about an arbitrary axis by an arbitrary amount.
     """
 
-    matrix = genRotMatrix(axis,theta)   
-    
+    matrix = genRotMatrix(axis,theta)
+
     return [sum([vector[j]*matrix[j][i] for j in range(3)]) for i in range(3)]
 
 
@@ -119,10 +119,10 @@ def arbRotCoord(coord,axis,theta):
     """
 
     matrix = genRotMatrix(axis,theta)
-    
+
     return [[sum([c[j]*matrix[j][i] for j in range(3)]) for i in range(3)]
             for c in coord]
-    
+
 
 
 def calcGlyCbeta(Ncoord,CAcoord,COcoord):
@@ -144,15 +144,15 @@ def calcGlyCbeta(Ncoord,CAcoord,COcoord):
     for i in range(3):
         CBeta.append(rotated[i] + CAcoord[i])
 
-    return CBeta   
+    return CBeta
 
- 
+
 def calcHXT(C_coord,O_coord,OXT_coord):
     """
     Calculates the location of HXT using the location of C, O, and OXT.
     (C-terminal hydrogen).
     """
-        
+
     vector_1,vector_2,vector_3 = [0.,0.,0.], [0.,0.,0.], [0.,0.,0.]
     for i in range(3):
         vector_1[i] = O_coord[i] - C_coord[i]
@@ -190,18 +190,18 @@ def calcDihedrals(prevCO,currN,currCA,currCO,nextN,cutoff=6.5):
     """
     Calculates phi and psi angles for an individual residue.
     """
-    
+
     # Set CA coordinates to origin
     A = [prevCO[i] - currCA[i] for i in range(3)]
     B = [currN[i] - currCA[i] for i in range(3)]
     C = [currCO[i] - currCA[i] for i in range(3)]
     D = [nextN[i] - currCA[i] for i in range(3)]
- 
-    # Make sure the atoms are close enough 
+
+    # Make sure the atoms are close enough
     #if max([dist_sq(x) for x in [A,B,C,D]]) > cutoff:
     #    err = "Atoms too far apart to be bonded!"
     #    raise ValueError(err)
- 
+
     # Calculate necessary cross products (define vectors normal to planes)
     V1 = crossProduct(A,B)
     V2 = crossProduct(C,B)
@@ -210,10 +210,10 @@ def calcDihedrals(prevCO,currN,currCA,currCO,nextN,cutoff=6.5):
     # Determine scalar angle between normal vectors
     phi = findAngle(V1,V2)
     if dotProduct(A,V2) > 0: phi = -phi
-    
+
     psi = findAngle(V2,V3)
     if dotProduct(D,V2) < 0: psi = -psi
-    
+
     return phi, psi
 
 
@@ -226,4 +226,3 @@ def calcHN(prevCO,prevO,currN,currCA):
     CN_bond = [currN[i] - prevCO[i] for i in range(3)]
 
     return [prevCO[i] + CO_bond[i] + CN_bond[i] for i in range(3)]
-
