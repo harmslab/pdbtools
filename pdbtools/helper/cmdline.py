@@ -16,7 +16,7 @@ __date__ = "080422"
 
 # Load builtin modules
 import sys, os
-import ..download
+from .. import download
 
 try:
     from optparse import OptionParser

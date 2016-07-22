@@ -1,0 +1,114 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_clean.py
+
+Standardizes a Brookhaven pdb file
+"""
+__author__ = "Michael J. Harms"
+__date__ = "070727"
+
+from pdbtools.helper import cmdline
+from pdbtools import clean
+
+def main():
+    """
+    To be called if module run from command line.
+    """
+
+    from helper import cmdline
+
+    # Parse command line
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="c",
+                      long_flag="chains",
+                      action="store",
+                      default=None,
+                      help="File containing chains to take",
+                      nargs=1)
+    cmdline.addOption(short_flag="o",
+                      long_flag="out_suffix",
+                      action="store",
+                      default="clean",
+                      help="suffix to append to output pdb",
+                      nargs=1)
+    cmdline.addOption(short_flag="r",
+                      long_flag="renumber_residues",
+                      action="store_true",
+                      default=False,
+                      help="Renumber residues from 1")
+    cmdline.addOption(short_flag="k",
+                      long_flag="keep_temp",
+                      action="store_true",
+                      default=False,
+                      help="Keep temporary files")
+    cmdline.addOption(short_flag="s",
+                      long_flag="skip",
+                      action="store_true",
+                      default=True,
+                      help="skip messed up pdb files")
+    cmdline.addOption(short_flag="f",
+                      long_flag="fix_atoms",
+                      action="store_false",
+                      default=True,
+                      help="fix atoms in original file")
+    cmdline.addOption(short_flag="n",
+                      long_flag="num_steps",
+                      action="store",
+                      default=500,
+                      help="number of minimization steps",
+                      nargs=1)
+
+
+    file_list, options = cmdline.parseCommandLine()
+
+    # Parse command line options
+    if options.chains == None:
+        chains = "all"
+    else:
+        chains = cmdline.readFile(options.chains)
+
+    suffix = options.out_suffix
+    renumber_residues = options.renumber_residues
+    keep_temp = options.keep_temp
+    fix_atoms = options.fix_atoms
+    num_steps = options.num_steps
+
+    for pdb_file in file_list:
+
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        print "Loading %s" % pdb_file
+        pdb_id = pdb_file[:-4]
+
+        try:
+            pdb = clean.pdbClean(pdb,pdb_id,chains,renumber_residues,keep_temp,
+                           fix_atoms,num_steps)
+        except clean.PdbCleanError, (strerror):
+            err = "Error cleaning \"%s\"\n%s\n" % (pdb_file,strerror)
+            print err,
+
+            if options.skip:
+                g = open("error.log","a")
+                g.write(err)
+                g.close()
+                continue
+            else:
+                sys.exit()
+
+        out_file = "%s_%s.pdb" % (pdb_id,suffix)
+        g = open(out_file,"w")
+        g.writelines(pdb)
+        g.close()
+
+        print "Cleaned pdb written to %s" % out_file
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,88 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ =\
+"""
+pdb_neighbors.py
+
+Calculates the number of CB atoms surrounding an atom in a pdb file.  A fake CB
+atom is added for GLY residues.
+"""
+
+__author__ = "Michael J. Harms"
+__date__ = "070521"
+
+from pdbtools.helper import cmdline
+from pdbtools import neighbors
+
+def main():
+    """
+    Call if program executed from command line.
+    """
+    # Parse command line
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="d",
+                      long_flag="dist",
+                      action="store",
+                      default=10.0,
+                      help="distance cutoff for neighbors",
+                      nargs=1,
+                      type=float)
+    cmdline.addOption(short_flag="s",
+                      long_flag="seq",
+                      action="store",
+                      default=4,
+                      help="minimum sequence separation between neighbors",
+                      nargs=1,
+                      type=int)
+    cmdline.addOption(short_flag="r",
+                      long_flag="residue",
+                      action="store",
+                      default=None,
+                      help="only calculate neighbors for residue (i.e. LYS)",
+                      nargs=1,
+                      type=str)
+    cmdline.addOption(short_flag="a",
+                      long_flag="atom",
+                      action="store",
+                      default=None,
+                      help="only calculate neighbors to an atom (i.e. CA)",
+                      nargs=1,
+                      type=str)
+    cmdline.addOption(short_flag="e",
+                      long_flag="everything",
+                      action="store_true",
+                      default=False,
+                      help="find number of CB neighbors for all atoms in pdb")
+
+
+    file_list, options = cmdline.parseCommandLine()
+
+    out = []
+    for pdb_file in file_list:
+
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        residue_list, num_neighbors = neighbors.pdbNeighbors(pdb,options.dist,options.seq,
+                                                   options.residue,options.atom,
+                                                   options.everything)
+
+        short_pdb = os.path.split(pdb_file)[-1][:-4]
+        for i in range(len(residue_list)):
+            out.append("%30s%17s%10i\n" % (short_pdb,residue_list[i],
+                                           num_neighbors[i]))
+
+    out = ["%10i%s" % (i,x) for i, x in enumerate(out)]
+    out.insert(0,"%10s%30s%17s%10s\n" % (" ","pdb","residue","cb_neigh"))
+    out.insert(0,"# Dist cutoff: %.2F\n# Seq cutoff:  %i\n" %
+               (options.dist,options.seq))
+
+    print "".join(out)
+
+if __name__ == "__main__":
+    main()

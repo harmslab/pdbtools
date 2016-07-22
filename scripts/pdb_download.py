@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+"""
+pdb_download.py
+
+Download a pdb or set of pdb files and uncompress them.
+"""
+
+__author__ = "Michael J. Harms"
+__date__ = "070521"
+__usage__ = "pdb_download.py pdb_id or file w/ list of ids"
+
+from pdbtools.helper import cmdline
+from pdbtools import download
+
+def main():
+    """
+    If the function is called from the command line.
+    """
+
+    try:
+        file_input = sys.argv[1:]
+    except IndexError:
+        print __usage__
+        sys.exit()
+
+    pdb_list = []
+    for arg in file_input:
+        if os.path.isfile(arg) and arg[-4:] != ".pdb":
+
+            # Read in input file
+            f = open(arg,"r")
+            tmp_list = f.readlines()
+            f.close()
+
+            # Strip comments and blank lines, recombine file, then split on all
+            # white space
+            tmp_list = [p for p in tmp_list if p[0] != "#" and p.strip() != ""]
+            tmp_list = "".join(tmp_list)
+            tmp_list = tmp_list.split()
+            tmp_list = [p.lower() for p in tmp_list]
+            pdb_list.extend(tmp_list)
+
+        else:
+
+            # Lower case, remove .pdb if appended
+            pdb_id = arg.lower()
+            if pdb_id[-4:] == ".pdb":
+                pdb_id = pdb_id[:-4]
+
+            pdb_list.append(pdb_id)
+
+    # Download pdbs
+    download.pdbDownload(pdb_list)
+
+
+if __name__ == "__main__":
+    main()

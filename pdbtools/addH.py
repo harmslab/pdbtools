@@ -14,7 +14,7 @@ from math import sqrt
 from .helper import container, cmdline, geometry
 from .atom_renumber import pdbAtomRenumber
 from .disulfide import pdbDisulfide
-import .charmm.interface
+from .charmm import interface
 
 class PdbAddHError(Exception):
     """
@@ -273,7 +273,7 @@ def pdbAddH(pdb,pdb_id,uhbd_style=False,his_types=None,calc_type="single",
     try:
         out_pdb = charmm.interface.charmmWash(structure_list,calc_type,
                                               keep_temp,hbond)
-    except charmm.interface.CharmmInterfaceError, (strerr):
+    except interface.CharmmInterfaceError(strerr):
         err = "Error in charmm!\n"
         err += "%s\n" % strerr
         raise PdbAddHError(err)

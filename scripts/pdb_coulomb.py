@@ -1,0 +1,137 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_coulomb.py
+
+Calculates the total coulomb energy (kcal/mol) of a protein structure in a pdb
+file assuming that all groups titrate with model compound pKa values.
+"""
+
+__author__ = "Michael J. Harms"
+__date__ = "070520"
+
+from pdbtools.helper import cmdline
+from pdbtools import coulomb
+
+def main():
+    """
+    If called from command line, calculate energy and print to standard out.
+    """
+    # Parse command line
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="d",
+                          long_flag="dielec_const",
+                          action="store",
+                          default=40.0,
+                          help="dielectric constant",
+                          nargs=1,
+                          type=float)
+    cmdline.addOption(short_flag="i",
+                          long_flag="ionic_str",
+                          default=100,
+                          action="store",
+                          help="ionic strength (mM)",
+                          type=float)
+    cmdline.addOption(short_flag="p",
+                          long_flag="pH",
+                          default=7.0,
+                          action="store",
+                          help="pH",
+                          type=float)
+    cmdline.addOption(short_flag="T",
+                          long_flag="temperature",
+                          default=298.0,
+                          action="store",
+                          help="temperature (K)",
+                          type=float)
+    cmdline.addOption(short_flag="t",
+                          long_flag="titrate",
+                          default=(None,None),
+                          action="store",
+                          help="titrate a variable",
+                          type=str,
+                          nargs=2)
+
+    file_list, options = cmdline.parseCommandLine()
+
+    # create dictionary of option values where values are in lists
+    value_dict = dict([(k,[options.__dict__[k]])
+                       for k in options.__dict__.keys() if k != "titrate"])
+
+    # Deal with whether the user has specified a text file containing values
+    # over which to titrate.
+    if options.titrate != (None,None):
+        available_options = value_dict.keys()
+
+        # Make sure that the specified option can titrate and the file exists.
+        titration = options.titrate[0]
+        data_file = options.titrate[1]
+        if titration in available_options:
+            if os.path.isfile(data_file):
+                f = open(data_file,'r')
+                titr_data = f.readlines()
+                f.close()
+
+                # Strip comments and blank lines, then re-join all lines
+                titr_data = [l for l in titr_data
+                             if l[0] != "#" and l.strip() != ""]
+                titr_data = "".join(titr_data)
+
+                # Parse file
+                try:
+                    titr = [float(x) for x in titr_data.split()]
+                    value_dict[titration] = titr[:]
+
+                # Do some basic error checking
+                except ValueError:
+                    print "Data file \"%s\" has mangled data!" % data_file
+                    sys.exit()
+
+                if len(titr) == 0:
+                    print "Data file \"%s\" is empty!" % data_file
+                    sys.exit()
+            else:
+                print "Data file \"%s\" does not exist!" % data_file
+                sys.exit()
+        else:
+            print "\"%s\" cannot be titrated!" % titration
+            print "Available titrations:"
+            for option in available_options:
+                print "\t%s" % option
+            sys.exit()
+
+
+    out = ["%10s%30s%10s%10s%10s%10s%10s\n" %
+           (" ","pdb","ep","ion_str","pH","T","dG")]
+    counter = 0
+    for pdb_file in file_list:
+
+        # Read in coordinates
+        coord, pKa, charge = cmdline.readPDB(pdb_file)
+        short_pdb = os.path.split(pdb_file)[-1][:-4]
+
+        # Determine electrostatic energy, titrating over all relavent variables
+        for temperature in value_dict["temperature"]:
+            for pH in value_dict["pH"]:
+                for ionic_str in value_dict["ionic_str"]:
+                    for dielec in value_dict["dielec_const"]:
+
+                        energy = coulomb.pdbCoulomb(coord,pKa,charge,dielec,ionic_str,
+                                            pH,temperature)
+
+
+                        # Write out results
+                        out.append("%10i%30s%10.3F%10.3F%10.3F%10.3F%10.3F\n" %
+                                   (counter,short_pdb,dielec,ionic_str,
+                                    pH,temperature,energy))
+                        counter += 1
+
+    print "".join(out)
+
+if __name__ == "__main__":
+    main()

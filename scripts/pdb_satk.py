@@ -1,0 +1,146 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_satk.py
+
+Run solvent-accessibility modified Tanford-Kirkwood calculations using the
+structure in a pdb file.  This is actually a simple interface to a set of
+fortran-77 programs (satkelni) written by Bertrand Garcia-Moreno E. in 1988.
+
+For more information, see:
+Matthew JB, Gurd FR, Garcia-Moreno B, Flanagan MA, March KL, Shire SJ.
+"pH-dependent processes in proteins." CRC Crit Rev Biochem. 1985;18(2):91-197.
+"""
+__author__ = "Michael J. Harms"
+__date__ = "080313"
+
+from pdbtools.helper import cmdline
+from pdbtools import satk
+
+def main():
+    """
+    Function to call if run from command line.
+    """
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="w",
+                      long_flag="wij_file",
+                      action="store",
+                      default=None,
+                      help="Specify a pre-generated wij file",
+                      nargs=1,
+                      type=str)
+    cmdline.addOption(short_flag="p",
+                      long_flag="protein_dielec",
+                      action="store",
+                      default=4.,
+                      help="Protein dielectric constant",
+                      nargs=1,
+                      type=float)
+    cmdline.addOption(short_flag="s",
+                      long_flag="solvent_dielec",
+                      action="store",
+                      default=78.5,
+                      help="Solvent dielectric constant",
+                      nargs=1,
+                      type=float)
+    cmdline.addOption(short_flag="b",
+                      long_flag="ion_radius",
+                      action="store",
+                      default=2.,
+                      help="Radius of ion (angstroms)",
+                      nargs=1,
+                      type=float)
+    cmdline.addOption(short_flag="r",
+                      long_flag="protein_radius",
+                      action="store",
+                      default=18.,
+                      help="Radius of protein (angstroms)",
+                      nargs=1,
+                      type=float)
+    cmdline.addOption(short_flag="d",
+                      long_flag="depth",
+                      action="store",
+                      default=0.,
+                      help="Depth of sidechain burial (angstroms)",
+                      nargs=1,
+                      type=float)
+    cmdline.addOption(short_flag="T",
+                      long_flag="temperature",
+                      action="store",
+                      default=298.16,
+                      help="Temperature (Kelvin)",
+                      nargs=1,
+                      type=float)
+    cmdline.addOption(short_flag="i",
+                      long_flag="ionic_strengths",
+                      action="store",
+                      default=None,
+                      help="File with set of ionic strengths (M)",
+                      nargs=1,
+                      type=str)
+    cmdline.addOption(short_flag="k",
+                      long_flag="keep_temp",
+                      action="store_true",
+                      default=False,
+                      help="Keep temporary files")
+
+    file_list, options = cmdline.parseCommandLine()
+
+
+    # Generate wij file with all ij potentials
+    if options.wij_file != None:
+        wij_file = options.wij_file
+        if not os.path.isfile(wij_file):
+            err = "Specified wij file \"%s\" does not exist!" % wij_file
+            raise  SATKError(err)
+    else:
+
+        # If a file with ionic strengths is specified, use it.
+        if options.ionic_strengths != None:
+            if not os.path.isile(ionic_strengths):
+                err = "Ionic strengths file \"%s\" could not be found!" % \
+                    options.ionic_strengths
+
+            f = open(ionic_strengths,'r')
+            lines = f.readlines()
+            f.close()
+
+            salt_list = []
+            lines = [l for l in lines if l[0] != "#" and l.strip() != ""]
+            for line in lines:
+                salt_list.extend([float(entry) for entry in line])
+            salt_list.sort()
+
+        else:
+            salt_list = [0.001,0.005,0.01,0.05,0.1,0.5,1.0]
+
+
+        # Create wij file using the command line options specified
+        wij_file = "wij.wij"
+        satk.runMkwij(wij_file,Dint=options.protein_dielec,
+                          Dsolv=options.solvent_dielec,
+                          T=options.temperature,
+                          a=options.ion_radius+options.protein_radius,
+                          b=options.protein_radius,
+                          g=options.depth,
+                          salts=salt_list)
+
+
+    # Run satk on all files in file_list
+    for pdb_file in file_list:
+
+        pdb_tuple = os.path.split(pdb_file)
+        if pdb_tuple[0] != "":
+            shutil.copy(pdb_file,pdb_tuple[1])
+
+        pdb_file = pdb_tuple[1]
+
+        satk.pdbSatk(pdb_file,wij_file=wij_file,keep_temp=options.keep_temp)
+
+if __name__ == "__main__":
+    main()

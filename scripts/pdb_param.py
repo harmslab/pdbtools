@@ -1,0 +1,118 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_param.py:
+
+Calculates some molecular parameters given the sequence of the protein in a pdb
+file.
+    0) The molecular weight of the protein
+    1) The pI of the protein assuming model compound pKa values
+    2) The fraction titratable, acidic, basic
+    3) The charge on the molecule assuming all ASP, GLU, HIS, LYS, and ARG are
+       ionized
+"""
+
+__author__ = "Michael J. Harms"
+__date__ = "080125"
+
+from pdbtools.helper import cmdline
+from pdbtools import param
+
+def main():
+    """
+    If called from the command line, execute this.
+    """
+    # Parse command line
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="a",
+                      long_flag="atomseq",
+                      action="store_true",
+                      default=False,
+                      help="use ATOM sequence, not SEQRES")
+    cmdline.addOption(short_flag="f",
+                      long_flag="freq",
+                      action="store_true",
+                      default=False,
+                      help="write out amino acid frequencies")
+    cmdline.addOption(short_flag="c",
+                      long_flag="chain",
+                      action="store",
+                      default="all",
+                      help="chain to analyze",
+                      nargs=1,
+                      type=str)
+
+    file_list, options = cmdline.parseCommandLine()
+
+    out = []
+    for pdb_index, pdb_file in enumerate(file_list):
+
+        # Read in pdb file
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        # Calculate simple properties about protein charge
+        try:
+            count_dict, mw, pI, seq_type = param.pdbParam(pdb,chain=options.chain,
+                                                    use_atoms=options.atomseq)
+        except PdbParamError, (strerror):
+            print "Error processing file \"%s\":" % pdb_file
+            print "%s" % (strerror)
+            sys.exit()
+
+        aa_list = count_dict.keys()
+        aa_list.sort()
+
+        # Calculate fraction ionizable
+        total = float(sum(count_dict.values()))
+        titr_aa_list = [aa for aa in aa_list if aa in PKA_DICT.keys()]
+        titr_total = float(sum([count_dict[aa] for aa in titr_aa_list]))
+
+        fx_titr = titr_total/total
+
+        # Calculate the apparent charge
+        acid = sum([count_dict[aa] for aa in ["ASP","GLU"]])
+        base = sum([count_dict[aa] for aa in ["HIS","LYS","ARG"]])
+        app_charge = base - acid
+
+        # Print to output in pretty way
+        short_pdb = os.path.split(pdb_file)[-1][:-4]
+        out.append("%30s%10s%10i%10.2F%10.2F%10i\n" %
+                   (short_pdb,seq_type.strip(),mw,pI,fx_titr,app_charge))
+
+        # Write out amino acid frequencies if requested
+        if options.freq:
+
+            total_freq = dict([(aa,count_dict[aa]/total) for aa in aa_list])
+            titr_freq = dict([(aa,count_dict[aa]/titr_total)
+                              for aa in titr_aa_list])
+
+            freq_out = [5*"%10s" % (" ","aacid","counts","fx_total","fx_titr")]
+            freq_out.append("\n")
+            for aa_index, aa in enumerate(aa_list):
+                if aa in titr_aa_list:
+                    freq_out.append("%10i%10s%10i%10.2F%10.2F\n" %
+                        (aa_index,aa,count_dict[aa],100*total_freq[aa],
+                        100*titr_freq[aa]))
+                else:
+                    freq_out.append("%10i%10s%10i%10.2F%10s\n" %
+                        (aa_index,aa,count_dict[aa],100*total_freq[aa],"NA"))
+
+            g = open("%s_freq.txt" % (pdb_file[:-4]),"w")
+            g.writelines(freq_out)
+            g.close()
+
+    out = ["%10i%s" % (i,l) for i, l in enumerate(out)]
+    out.insert(0,"%10s%30s%10s%10s%10s%10s%10s\n" %
+               (" ","pdb","seq","mw","pI","fx_titr","charge"))
+    print "".join(out)
+
+
+if __name__ == "__main__":
+    main()
