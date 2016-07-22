@@ -2,6 +2,10 @@
 
 A set of tools for manipulating and doing calculations on wwPDB macromolecule structure files
 
+PDBtools has recently changed. The original version was a set of python scripts to be downloaded and used locally on the command line. It has now been reorganized into a python packaged and scripts are now installed globally. Thus, you can run any of the old pdb_tools from the commandline from anywhere on your filesystem.
+
+If you'd like to download the old version of pdbtools, download version [v0.1](https://github.com/harmslab/pdbtools/releases/tag/v0.1).
+
 ##Introduction
 pdbTools is a set of command line [python](http://www.python.org) scripts that manipulate [wwPDB](http://www.wwpdb.org/) protein and nucleic acid structure files.  There are many programs, both open source and proprietary, that perform similar tasks; however, most of these tools are buried within programs of larger functionality.  Thus, relatively simple calculations often involve learning a new program, compiling modules, and installing libraries. To fill a niche (and get the tasks done that I needed done), I started writing my own toolset.  This has evolved into the pdbTools suite.  The suite of programs is characterized by the following philosophy:
 
@@ -86,7 +90,7 @@ pdb_XXXX pdb_input optional_args > output
 
 Version 0.2 has moved all `pdbtools` into a set of modules. These can be used to develop new scripts easily.
 
-Note: You can download the original pdbtools scripts (prior to packaging) [here](https://github.com/harmslab/pdbtools/releases). 
+Note: You can download the original pdbtools scripts (prior to packaging) [here](https://github.com/harmslab/pdbtools/releases/tag/v0.1).
 
 ##Third Party Software
 Some scripts require installation of third-party programs.  These should be installed according to the instructions given by the third-party, then placed into the $PATH variable.  To use the scripts that require CHARMM, the `$CHARMM` environment variable must be set to the directory containing the `charmm` binary and the `$CHARMM_LIB` environment variable to the directory containing the charmm parameter files.  
