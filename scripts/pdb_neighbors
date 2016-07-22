@@ -15,6 +15,7 @@ atom is added for GLY residues.
 __author__ = "Michael J. Harms"
 __date__ = "070521"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import neighbors
 

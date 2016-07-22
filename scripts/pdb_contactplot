@@ -14,6 +14,7 @@ Generate a distance-based contact plot for a protein.
 __author__ = "Michael J. Harms"
 __date__ = ""
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import contactplot
 
@@ -21,10 +22,6 @@ def main():
     """
     Function to call if run from command line.
     """
-
-    from helper import cmdline
-
-
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="a",
                           long_flag="all",

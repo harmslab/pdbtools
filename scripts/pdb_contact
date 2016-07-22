@@ -13,6 +13,7 @@ Find all residues within some cutoff of a target residue in a pdb file.
 __author__ = "Michael J. Harms"
 __date__ = "111116"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import contact
 from pdbtools import splitnmr

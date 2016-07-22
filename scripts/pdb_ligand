@@ -1,40 +1,32 @@
 #!/usr/bin/env python
 
-# Copyright 2009, Michael J. Harms
+# Copyright 2008, Michael J. Harms
 # This program is distributed under General Public License v. 3.  See the file
 # COPYING for a copy of the license.
 
 __description__ = \
 """
-pdb_oligomer.py
+pdb_ligand.py
 
-Grabs the name of every molecule in the file, then looks at the biological
-assembly and decides whether or not the asymmetric unit has the relevant
-assembly.  If it does not, the program spits out false.  (Some day, it will
-spit out the relevant assembly...)
-
+Spits out a list of all ligands in a pdb.
 """
 __author__ = "Michael J. Harms"
-__date__ = "090305"
+__date__ = ""
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
-from pdbtools import oligomer
+from pdbtools import ligand
 
 def main():
     """
     Function to call if run from command line.
     """
-
-    from helper import cmdline
-
-
     cmdline.initializeParser(__description__,__date__)
-    cmdline.addOption(short_flag="c",
-                          long_flag="collapse_repeat",
+    cmdline.addOption(short_flag="s",
+                          long_flag="skip_boring",
                           action="store_true",
-                          default=True,
-                          help="Collapse repeated molecule names")
-
+                          default=False,
+                    help="Ignore boring ligands (from BORING_LIGANDS list)")
 
     file_list, options = cmdline.parseCommandLine()
 
@@ -45,15 +37,14 @@ def main():
         pdb = f.readlines()
         f.close()
 
-        olig_output = oligomer.pdbOligomer(pdb,options.collapse_repeat)
-
         pdb_id = pdb_file[:pdb_file.index(".pdb")]
         pdb_id = os.path.split(pdb_id)[-1]
 
-        out.append("%s\t%s" % (pdb_id,olig_output))
+        ligand_out = ligand.pdbLigand(pdb,options.skip_boring)
+
+        out.append("%s\t%s" % (pdb_id,ligand_out))
 
     out = ["%i\t%s\n" % (i,l) for i, l in enumerate(out)]
-    out.insert(0,"\tpdb\tcompounds\tchains\tWYSIWYG\n")
 
     print "".join(out)
 

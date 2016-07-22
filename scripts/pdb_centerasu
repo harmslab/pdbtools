@@ -15,6 +15,7 @@ Moves the assymmetric unit into the unit cell.
 __author__ = "Michael J. Harms and Marcin Cieslik"
 __date__ = "080408"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import centerasu
 

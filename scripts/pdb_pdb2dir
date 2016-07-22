@@ -13,6 +13,7 @@ Make an individual subdirectory for each pdb file in a set of pdb files.
 __author__ = "Michael J. Harms"
 __date__ = "080204"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 
 def main():
@@ -20,9 +21,6 @@ def main():
     Creates directories in output_dir for each pdb file in input_dir and copies
     pdb files into respective directories.
     """
-
-    from helper import cmdline
-
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="o",
                       long_flag="output",

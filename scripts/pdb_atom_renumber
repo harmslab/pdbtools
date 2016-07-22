@@ -17,7 +17,7 @@ Renumbers atom records in a pdb without touching residue numbers.
 __author__ = "Michael J. Harms"
 __date__ = "070529"
 
-import os, sys
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import atom_renumber
 
@@ -25,9 +25,6 @@ def main():
     """
     Function to call if this is called from command line.
     """
-
-    from helper import cmdline
-
     # Parse command line
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="r",

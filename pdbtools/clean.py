@@ -14,7 +14,7 @@ __author__ = "Michael J. Harms"
 __date__ = "070727"
 
 import sys, time, string, os, shutil
-import .pdb_atom_renumber, charmm.interface
+from . import atom_renumber, charmm
 from .helper import container
 from .data.common import *
 

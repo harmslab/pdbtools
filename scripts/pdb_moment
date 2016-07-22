@@ -17,6 +17,7 @@ CD, CG, CZ, NZ, and NE2 atoms respectively (see pdb_data/polar_param.txt).
 __author__ = "Michael J. Harms"
 __date__ = ""
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import moment, addH
 

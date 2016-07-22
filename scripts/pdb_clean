@@ -13,6 +13,7 @@ Standardizes a Brookhaven pdb file
 __author__ = "Michael J. Harms"
 __date__ = "070727"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import clean
 
@@ -20,9 +21,6 @@ def main():
     """
     To be called if module run from command line.
     """
-
-    from helper import cmdline
-
     # Parse command line
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="c",

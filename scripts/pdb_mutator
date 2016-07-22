@@ -15,6 +15,7 @@ __author__ = "Michael J. Harms"
 __date__ = "070729"
 __description__ = "Mutates a residue in a pdb file"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import mutator
 

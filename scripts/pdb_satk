@@ -19,6 +19,7 @@ Matthew JB, Gurd FR, Garcia-Moreno B, Flanagan MA, March KL, Shire SJ.
 __author__ = "Michael J. Harms"
 __date__ = "080313"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import satk
 

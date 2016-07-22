@@ -66,9 +66,11 @@ Some of the programs are written as interfaces to other programs: [CHARMM](http:
 
 ##Usage
 
-Almost all programs in the pdbTools suite have the same usage:
+### Commandline usage
 
-XXXX.py pdb_input optional_args > output
+Almost all programs in the pdbTools suite have the same command-line usage:
+
+pdb_XXXX pdb_input optional_args > output
 
 **pdb_input** can be one of the following (in any arbitrary combination):
   * pdb files
@@ -79,6 +81,9 @@ XXXX.py pdb_input optional_args > output
 **optional_args**: Although the arguments to each program are identical, the options are quite different depending on the program requirements.  The best way to learn how to use a particular program is to type `XXXX.py` --help.  This will spit out a list of available options.  In most cases, the options are actually optional: the program will use a sane default if none is specified.  In some cases (notably `mutator.py`), options must be specified for the program to run.
 
 **output**: Most scripts dump out a pdb file to standard out.  This can be captured using the ">" redirect.   Some write an output file that uses the name of the input pdb file as a suffix (e.g. `close-contacts.py 1stn.pdb` creates a file called 1stn.pdb.close_contacts).  
+
+### API
+
 
 ##Third Party Software
 Some scripts require installation of third-party programs.  These should be installed according to the instructions given by the third-party, then placed into the $PATH variable.  To use the scripts that require CHARMM, the `$CHARMM` environment variable must be set to the directory containing the `charmm` binary and the `$CHARMM_LIB` environment variable to the directory containing the charmm parameter files.  

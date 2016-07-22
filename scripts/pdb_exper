@@ -13,6 +13,7 @@ Extracts data about experimental procedure used to generate structure.
 __author__ = "Michael J. Harms"
 __date__ = "080128"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import exper
 

@@ -13,6 +13,7 @@ pdb_dist-filter.py
 Takes pdb file and calculates the distance between "residue" "atom" and all
 other atoms of this type in the pdb file with "column" matching "select".
 """
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import dist_filter
 

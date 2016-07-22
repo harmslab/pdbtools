@@ -16,6 +16,7 @@ command line option is specified).
 __author__ = "Michael J. Harms"
 __date__ = "061109"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import centermass
 
@@ -23,9 +24,6 @@ def main():
     """
     If called from command line...
     """
-
-    from helper import cmdline
-
     # Parse command line
     cmdline.initializeParser(__description__,__date__)
     cmdline.addOption(short_flag="c",

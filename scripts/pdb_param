@@ -20,6 +20,7 @@ file.
 __author__ = "Michael J. Harms"
 __date__ = "080125"
 
+import os, shutil, sys
 from pdbtools.helper import cmdline
 from pdbtools import param
 

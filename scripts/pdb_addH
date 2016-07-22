@@ -8,6 +8,7 @@ __description__ = "Adds polar hydrogens to a pdb file for a UHBD calculation."
 __author__ = "Michael J. Harms"
 __date__ = "070727"
 
+import os, shutil, sys
 from pdbtools.helper import container, cmdline, geometry
 from pdbtools import addH
 from math import sqrt
