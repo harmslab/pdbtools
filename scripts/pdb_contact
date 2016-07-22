@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+
+# Copyright 2008, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_contacting-residues.py
+
+Find all residues within some cutoff of a target residue in a pdb file.
+"""
+__author__ = "Michael J. Harms"
+__date__ = "111116"
+
+import os, shutil, sys
+from pdbtools.helper import cmdline
+from pdbtools import contact
+from pdbtools import splitnmr
+
+def main():
+    """
+    Function to call if run from command line.
+    """
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="r",
+                      long_flag="resname",
+                      action="store",
+                      default="TRP",
+                      help="look for contacts near specified resname",
+                      nargs=1)
+    cmdline.addOption(short_flag="n",
+                      long_flag="resnum",
+                      action="store",
+                      default=None,
+                      help="look for contacts near specified residue number",
+                      nargs=1)
+    cmdline.addOption(short_flag="d",
+                      long_flag="distance",
+                      action="store",
+                      default=3.5,
+                      help="distance cutoff for calling contacts",
+                      nargs=1,
+                      type=float)
+
+    file_list, options = cmdline.parseCommandLine()
+
+    if options.resnum != None:
+        target_type = "resnum"
+        target = int(options.resnum)
+    else:
+        target_type = "resname"
+        target = options.resname
+
+
+    out = []
+    for pdb_file in file_list:
+
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        # Only take the first NMR model
+        models = splitnmr.splitNMR(pdb)
+        if len(models) > 0:
+            pdb = models[0]
+
+        tmp_out = contact.pdbContacting(pdb,target,options.distance,target_type)
+
+        out.extend(["%s\t%s" % (pdb_file[:-4],t) for t in tmp_out])
+
+    return out
+
+
+# If run from command line...
+if __name__ == "__main__":
+
+    out = main()
+    print "".join(out)

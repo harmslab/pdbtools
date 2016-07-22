@@ -1,0 +1,138 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = "Adds polar hydrogens to a pdb file for a UHBD calculation."
+__author__ = "Michael J. Harms"
+__date__ = "070727"
+
+import os, shutil, sys
+from pdbtools.helper import container, cmdline, geometry
+from pdbtools import addH
+from math import sqrt
+
+def main():
+    """
+    Call if program called from command line.
+    """
+
+    # Parse command line
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="t",
+                      long_flag="his_tautomers",
+                      action="store",
+                      default=None,
+                      help="File containing his tautomers to use",
+                      nargs=1)
+    cmdline.addOption(short_flag="k",
+                      long_flag="keep_temp",
+                      action="store_true",
+                      default=False,
+                      help="Keep temporary files")
+    cmdline.addOption(short_flag="f",
+                      long_flag="full",
+                      action="store_true",
+                      default=False,
+                      help="Add hydrogens for UHBD full calculation")
+    cmdline.addOption(short_flag="b",
+                      long_flag="hbond",
+                      action="store",
+                      default=None,
+                      help="Write out hbonds to file",
+                      nargs=1,
+                      type=str)
+    cmdline.addOption(short_flag="u",
+                      long_flag="uhbd_style",
+                      action="store_true",
+                      default=False,
+                      help="Write out in non-standard uhbd format")
+    cmdline.addOption(short_flag="s",
+                      long_flag="skip",
+                      action="store_true",
+                      default=True,
+                      help="skip messed up pdb files")
+
+
+    file_list, options = cmdline.parseCommandLine()
+
+    # Deal with his_tautomers file
+    if options.his_tautomers != None:
+
+        # Read in as a standard ascii file.
+        his_types = cmdline.readFile(options.his_tautomers)
+        try:
+            his_types = [int(h) for h in his_types]
+
+            # Make sure that entries are valid
+            check = [h == 1 or h == 2 for h in his_types]
+            if False in check:
+                raise ValueError
+        except ValueError:
+            err = "His tautomer file can contain only 1's (HISB) and 2's (HISA)"
+            cmdline.parser.error(err)
+    else:
+        his_types = None
+
+    # Decide whether to keep temp files and how to format output
+    keep_temp = options.keep_temp
+    uhbd_style = options.uhbd_style
+    hbond = options.hbond
+
+    # Decide whether to add "full" hydrogens.
+    if options.full:
+        calc_type = "full"
+    else:
+        calc_type = "single"
+
+    # Add hydrogens for every file in file_list
+    file_list.sort()
+    for file in file_list:
+        pdb_id = os.path.split(file)[-1][:-4]
+        out_file = "%sH.pdb" % pdb_id
+
+        print "%s --> %s" % (file,out_file)
+
+        # Load in file
+        f = open(file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        # Add hydrogens
+        try:
+            pdb_out = addH.pdbAddH(pdb,pdb_id,uhbd_style=uhbd_style,
+                              his_types=his_types,
+                              keep_temp=keep_temp,
+                              calc_type=calc_type,
+                              hbond=hbond)
+        except addH.PdbAddHError, (strerror):
+            err = "Addition of hydrogens failed for %s\n" % file
+            err += "Problem was with CHARMM\n.%s" % strerror
+            print err
+
+            if options.skip:
+                print "CHARMM output written to error.log"
+                g = open("error.log","a")
+                g.write(err)
+                g.write("charmm.out copied below\n%s\n" % (79*"-"))
+
+                h = open("charmm.out",'r')
+                charmm_out = h.readlines()
+                h.close()
+
+                g.writelines(charmm_out)
+                g.write("\n\n")
+                g.close()
+
+                continue
+            else:
+                sys.exit()
+
+        # Dump to output file
+        g = open(out_file,'w')
+        g.writelines(pdb_out)
+        g.close()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_subset.py
+
+Takes a subset of residues/chains from a pdb file.  All non-atom entries are
+left intact.
+"""
+
+__author__ = "Michael J. Harms"
+__date__ = "080121"
+
+
+import os, shutil, sys
+from pdbtools.helper import cmdline
+from pdbtools import subset
+
+def main():
+    """
+    If called from command line.
+    """
+    # Parse command line
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="c",
+                          long_flag="chain",
+                          action="store",
+                          default="all",
+                          help="chain to select (separte mulitiple by commas)",
+                          nargs=1,
+                          type=str)
+    cmdline.addOption(short_flag="r",
+                          long_flag="residues",
+                          default=[0,0],
+                          action="store",
+                          help="residues to select",
+                          nargs=2,
+                          type=int)
+
+    file_list, options = cmdline.parseCommandLine()
+
+    for pdb_file in file_list:
+
+        # Attempt to strip .pdb extension
+        try:
+            pdb_id = pdb_file[:pdb_file.index(".pdb")]
+        except IndexError:
+            pdb_id = pdb_file
+
+        # Read file
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        # Pop out subset
+        pdb, chain, residues = subset.pdbSubset(pdb,options.chain,options.residues)
+
+        # Write to file
+        out_file = "%s_%s_%i-%i.pdb" % (pdb_id,chain,residues[0],residues[1])
+        g = open(out_file,'w')
+        g.writelines(pdb)
+        g.close()
+
+
+
+if __name__ == "__main__":
+    main()

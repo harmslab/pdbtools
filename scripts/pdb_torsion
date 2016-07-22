@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+Determines the dihedral angles (phi,psi) for each residue in a protein.
+"""
+
+__author__ = "Michael J. Harms"
+__date__ = "070601"
+
+import os, shutil, sys
+from pdbtools.helper import cmdline
+from pdbtools import torsion
+
+def main():
+    """
+    Call if this is called from the command line.
+    """
+
+    cmdline.initializeParser(__description__,__date__)
+
+    file_list, options = cmdline.parseCommandLine()
+
+    out = []
+    for pdb_file in file_list:
+
+        # Read in input file
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        # Calculate torsion angles and secondary structure
+        dihedrals, labels = torsion.pdbTorsion(pdb)
+
+        # Print out results in pretty fashion
+        short_pdb =  os.path.split(pdb_file)[-1][:-4]
+        for i in range(len(dihedrals)):
+            out.append("%30s%4s \"%s\"%10.2F%10.2F\n" %\
+                       (short_pdb,labels[i][:3],labels[i][4:],
+                        dihedrals[i][0],dihedrals[i][1]))
+
+    out = ["%10i%s" % (i,x) for i, x in enumerate(out)]
+
+    header = "%10s%30s%4s%8s%10s%10s\n" % (" ","pdb","aa","res","phi","psi")
+    out.insert(0,header)
+    print "".join(out)
+
+
+if __name__ == "__main__":
+    main()

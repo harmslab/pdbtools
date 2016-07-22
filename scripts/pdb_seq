@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_seq.py
+
+Reads sequence from pdb and returns in single amino acid code FASTA format.
+First tries to read SEQRES entries; if this fails, uses pdb coordinates.
+"""
+__author__ = "Michael J. Harms"
+__date__ = "080123"
+
+import sys, os
+from pdbtools.helper import cmdline
+from pdbtools.data.common import *
+from pdbtools import seq
+
+def main():
+    """
+    Function to execute if called from command line.
+    """
+    # Parse command line
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="c",
+                      long_flag="chain",
+                      action="store",
+                      default="all",
+                      help="chain to select",
+                      nargs=1,
+                      type=str)
+    cmdline.addOption(short_flag="a",
+                      long_flag="atomseq",
+                      action="store_true",
+                      default=False,
+                      help="use ATOM sequence, not SEQRES")
+
+
+    file_list, options = cmdline.parseCommandLine()
+
+    # Extract sequence data
+    for pdb_file in file_list:
+
+        pdb_id = os.path.split(pdb_file)[-1][:-4]
+
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        sequence = seq.pdbSeq2Fasta(pdb,pdb_id,options.chain,options.atomseq)
+
+        print sequence
+
+
+
+if __name__ == "__main__":
+    main()

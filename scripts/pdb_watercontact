@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_water-contact.py
+
+Determine which residues are in "contact" with other residues based on sum of
+vdw radii and water radius.
+"""
+__author__ = "Michael J. Harms"
+__date__ = "080214"
+
+import os, shutil, sys
+from pdbtools.helper import cmdline
+from pdbtools import watercontact
+
+def main():
+    """
+    Function to call if run from command line.
+    """
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="p",
+                          long_flag="probe",
+                          action="store",
+                          default=1.4,
+                          help="Water probe radius",
+                          nargs=1,
+                          type=float)
+
+
+    file_list, options = cmdline.parseCommandLine()
+
+    for pdb_file in file_list:
+
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        neighbors = watercontact.pdbWaterContact(pdb,options.probe)
+
+        residues = neighbors.keys()
+        residues.sort()
+
+        for r in residues:
+            print "\"%5s\"%10i" % (r,len(neighbors[r]))
+
+# If run from command line...
+if __name__ == "__main__":
+    main()

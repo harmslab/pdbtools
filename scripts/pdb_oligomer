@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+# Copyright 2009, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_oligomer.py
+
+Grabs the name of every molecule in the file, then looks at the biological
+assembly and decides whether or not the asymmetric unit has the relevant
+assembly.  If it does not, the program spits out false.  (Some day, it will
+spit out the relevant assembly...)
+
+"""
+__author__ = "Michael J. Harms"
+__date__ = "090305"
+
+import os, shutil, sys
+from pdbtools.helper import cmdline
+from pdbtools import oligomer
+
+def main():
+    """
+    Function to call if run from command line.
+    """
+    cmdline.initializeParser(__description__,__date__)
+    cmdline.addOption(short_flag="c",
+                          long_flag="collapse_repeat",
+                          action="store_true",
+                          default=True,
+                          help="Collapse repeated molecule names")
+
+
+    file_list, options = cmdline.parseCommandLine()
+
+    out = []
+    for pdb_file in file_list:
+
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        olig_output = oligomer.pdbOligomer(pdb,options.collapse_repeat)
+
+        pdb_id = pdb_file[:pdb_file.index(".pdb")]
+        pdb_id = os.path.split(pdb_id)[-1]
+
+        out.append("%s\t%s" % (pdb_id,olig_output))
+
+    out = ["%i\t%s\n" % (i,l) for i, l in enumerate(out)]
+    out.insert(0,"\tpdb\tcompounds\tchains\tWYSIWYG\n")
+
+    print "".join(out)
+
+
+# If run from command line...
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+
+# Copyright 2007, Michael J. Harms
+# This program is distributed under General Public License v. 3.  See the file
+# COPYING for a copy of the license.
+
+__description__ = \
+"""
+pdb_splitnmr.py
+
+Takes an nmr pdb file and splits each model into its own pdb file.
+"""
+__author__ = "Michael J. Harms"
+__date__ = "080204"
+
+import os, shutil, sys
+from pdbtools.helper import cmdline
+from pdbtools import splitnmr
+
+def main():
+    """
+    Function to call if run from commmand line.
+    """
+    cmdline.initializeParser(__description__,__date__)
+    file_list, options = cmdline.parseCommandLine()
+
+    for pdb_file in file_list:
+
+        f = open(pdb_file,'r')
+        pdb = f.readlines()
+        f.close()
+
+        models = splitnmr.splitNMR(pdb)
+
+        short_pdb = os.path.split(pdb_file)[-1][:-4]
+        for model in models:
+            index = model[0]
+            pdb_lines = model[1]
+            g = open("%s_%s.pdb" % (short_pdb,index),"w")
+            g.writelines(pdb_lines)
+            g.close()
+
+if __name__ == "__main__":
+    main()
