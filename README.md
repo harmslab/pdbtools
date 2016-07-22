@@ -84,6 +84,9 @@ pdb_XXXX pdb_input optional_args > output
 
 ### API
 
+Version 0.2 has moved all `pdbtools` into a set of modules. These can be used to develop new scripts easily.
+
+Note: You can download the original pdbtools scripts (prior to packaging) [here](https://github.com/harmslab/pdbtools/releases). 
 
 ##Third Party Software
 Some scripts require installation of third-party programs.  These should be installed according to the instructions given by the third-party, then placed into the $PATH variable.  To use the scripts that require CHARMM, the `$CHARMM` environment variable must be set to the directory containing the `charmm` binary and the `$CHARMM_LIB` environment variable to the directory containing the charmm parameter files.  
