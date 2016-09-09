@@ -130,7 +130,7 @@ def parseCommandLine():
     # Download missing pdb files
     if len(to_download) > 0:
         to_download.sort()
-        if pdb_download.pdbDownload(to_download):
+        if download.pdbDownload(to_download):
             file_list.extend(["%s.pdb" % f for f in to_download])
         else:
             err = "pdb could not be found on rcsb!"
