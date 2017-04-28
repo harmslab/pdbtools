@@ -1,4 +1,4 @@
-#pdbtools
+# pdbtools
 
 A set of tools for manipulating and doing calculations on wwPDB macromolecule structure files
 
@@ -6,7 +6,7 @@ PDBtools has recently changed. The original version was a set of python scripts 
 
 If you'd like to download the old version of pdbtools, download version [v0.1](https://github.com/harmslab/pdbtools/releases/tag/v0.1).
 
-##Introduction
+## Introduction
 pdbTools is a set of command line [python](http://www.python.org) scripts that manipulate [wwPDB](http://www.wwpdb.org/) protein and nucleic acid structure files.  There are many programs, both open source and proprietary, that perform similar tasks; however, most of these tools are buried within programs of larger functionality.  Thus, relatively simple calculations often involve learning a new program, compiling modules, and installing libraries. To fill a niche (and get the tasks done that I needed done), I started writing my own toolset.  This has evolved into the pdbTools suite.  The suite of programs is characterized by the following philosophy:
 
   * Each program should run as a stand-alone application with a standard, GNU/POSIX style command line interface.
@@ -25,13 +25,13 @@ pip install -e .
 ```
 from inside the package.
 
-##Current functions
+## Current functions
 
-###Miscellaneous
+### Miscellaneous
   * download pdb files from the RCSB database: [download.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/download.py)
 
-###Structure-based calculations
-####Geometry
+### Structure-based calculations
+#### Geometry
   * calculate protein center of mass: [centermass.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/centermass.py)
   * calculate distance distributions: [dist-filter.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/dist-filter.py),  [ion_dist.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/ion-dist.py)
   * calculate backbone torsion angles: [torsion.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/torsion.py)
@@ -42,16 +42,16 @@ from inside the package.
   * find ligands in structure file (ignoring boring ligands like water): [ligand.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/ligand.py)
   * figure out oligomerization state of macrmolecule: [oligomer.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/oligomer.py)
 
-####Energy calculation
+#### Energy calculation
   * calculate coulomb energy: [coulomb.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/coulomb.py)
   * calculate the dipole moment of the protein: [moment.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/moment.py)
   * calculate pKa of ionizable groups using the Solvent-Accessibility-modified Tanford-Kirkwood method [satk.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/satk.py) (requires fortran compiler)
-####Structure properties
+#### Structure properties
   * extract structure experiment properties: [exper.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/exper.py)
   * extract protein sequence from structure: [seq.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/seq.py)
   * calculate theoretical pI, MW, fraction titratable residues, charge: [param.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/param.py)
 
-###File/structure manipulation
+### File/structure manipulation
   * add polar hydrogens: [addH.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/addH.py) [requires CHARMM](http://www.charmm.org/)
   * add missing heavy atoms, remove alternate conformations, etc.: [clean.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/clean.py) [requires CHARMM](http://www.charmm.org/)
   * mutate a residue: [mutator.py](https://github.com/harmslab/pdbtools/blob/master/pdbTools/mutator.py) [requires CHARMM](http://www.charmm.org/)
@@ -68,7 +68,7 @@ from inside the package.
 Some of the programs are written as interfaces to other programs: [CHARMM](http://www.charmm.org/),  [NACCESS](http://www.bioinf.manchester.ac.uk/naccess/ NACCESS), which must be downloaded and installed separately if their functions are desired.  To use satk.py, a set of fortran packages must be compiled.
 
 
-##Usage
+## Usage
 
 ### Commandline usage
 
@@ -92,12 +92,12 @@ Version 0.2 has moved all `pdbtools` into a set of modules. These can be used to
 
 Note: You can download the original pdbtools scripts (prior to packaging) [here](https://github.com/harmslab/pdbtools/releases/tag/v0.1).
 
-##Third Party Software
+## Third Party Software
 Some scripts require installation of third-party programs.  These should be installed according to the instructions given by the third-party, then placed into the $PATH variable.  To use the scripts that require CHARMM, the `$CHARMM` environment variable must be set to the directory containing the `charmm` binary and the `$CHARMM_LIB` environment variable to the directory containing the charmm parameter files.  
 
 
-##Contributing
+## Contributing
 If you find a bug or have an idea for a program you'd like in this package, feel free to open an issue.  Even better: feel free to make a pull request!
 
-##Project Owner
+## Project Owner
 Mike Harms (https://github.com/harmsm, http://harmslab.uoregon.edu)
