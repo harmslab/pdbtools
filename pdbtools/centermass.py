@@ -17,7 +17,7 @@ __author__ = "Michael J. Harms"
 __date__ = "061109"
 
 import sys, re
-from data import common
+from .data import common
 
 def pdbCentermass(pdb,write_coord=False,include_hetatm=False,include_mass=True):
     """
@@ -73,9 +73,9 @@ def pdbCentermass(pdb,write_coord=False,include_hetatm=False,include_mass=True):
         try:
             masses.append(common.ATOM_WEIGHTS[atom_type])
         except:
-            print "File contains atoms of unknown type (%s)" % atom_type
-            print "Will assign them mass of carbon (12.011 g/mol)"
-            print "To fix, edit ATOM_WEIGHTS dictionary in pdb_data/common.py"
+            print("File contains atoms of unknown type (%s)" % atom_type)
+            print("Will assign them mass of carbon (12.011 g/mol)")
+            print("To fix, edit ATOM_WEIGHTS dictionary in pdb_data/common.py")
             masses.append(12.011)
 
     num_atoms = len(coord)
@@ -100,7 +100,7 @@ def pdbCentermass(pdb,write_coord=False,include_hetatm=False,include_mass=True):
     center_out = ["%10.4F" % c for c in center]
 
     if warn:
-        print "Warning.  No element entries in file.  Attempting to extract"
-        print "from the atom names.  Not always reliable..."
+        print("Warning.  No element entries in file.  Attempting to extract")
+        print("from the atom names.  Not always reliable...")
 
     return center_out, out

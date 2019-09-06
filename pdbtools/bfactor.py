@@ -63,7 +63,7 @@ def pdbBfactor(pdb,data_dict):
     for line in pdb:
         if line[0:6] == "ATOM  ":
             resnum = line[23:26].strip()
-            if resnum in data_dict.keys():
+            if resnum in list(data_dict.keys()):
                 out.append("%s%6.2F%s" % (line[:60],data_dict[resnum],
                                           line[66:]))
             else:

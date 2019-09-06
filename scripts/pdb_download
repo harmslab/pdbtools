@@ -26,7 +26,7 @@ def main():
     try:
         file_input = sys.argv[1:]
     except IndexError:
-        print __usage__
+        print(__usage__)
         sys.exit()
 
     pdb_list = []

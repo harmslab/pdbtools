@@ -22,6 +22,6 @@ def pdbLigand(pdb,skip_boring=False):
     """
 
     ligands = [l[7:10].strip() for l in pdb if l.startswith("HET   ")]
-    ligands = dict([(l,[]) for l in ligands if l not in BORING_LIGANDS]).keys()
+    ligands = list(dict([(l,[]) for l in ligands if l not in BORING_LIGANDS]).keys())
 
     return ";".join(ligands)

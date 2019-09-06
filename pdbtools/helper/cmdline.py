@@ -138,7 +138,7 @@ def parseCommandLine():
 
     # Remove duplicates from file_list by placing in dictionary
     file_dict = dict([(f,"") for f in file_list])
-    file_list = file_dict.keys()
+    file_list = list(file_dict.keys())
     file_list.sort()
 
     return file_list, options

@@ -83,15 +83,16 @@ def main():
         pdb = f.readlines()
         f.close()
 
-        print "Loading %s" % pdb_file
+        print("Loading %s" % pdb_file)
         pdb_id = pdb_file[:-4]
 
         try:
             pdb = clean.pdbClean(pdb,pdb_id,chains,renumber_residues,keep_temp,
                            fix_atoms,num_steps)
-        except clean.PdbCleanError, (strerror):
+        except clean.PdbCleanError as xxx_todo_changeme:
+            (strerror) = xxx_todo_changeme
             err = "Error cleaning \"%s\"\n%s\n" % (pdb_file,strerror)
-            print err,
+            print(err, end=' ')
 
             if options.skip:
                 g = open("error.log","a")
@@ -106,7 +107,7 @@ def main():
         g.writelines(pdb)
         g.close()
 
-        print "Cleaned pdb written to %s" % out_file
+        print("Cleaned pdb written to %s" % out_file)
 
 if __name__ == "__main__":
     main()

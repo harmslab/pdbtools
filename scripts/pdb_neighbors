@@ -83,7 +83,7 @@ def main():
     out.insert(0,"# Dist cutoff: %.2F\n# Seq cutoff:  %i\n" %
                (options.dist,options.seq))
 
-    print "".join(out)
+    print("".join(out))
 
 if __name__ == "__main__":
     main()

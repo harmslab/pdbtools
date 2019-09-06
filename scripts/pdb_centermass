@@ -54,7 +54,7 @@ def main():
 
         center, pdb_out = centermass.pdbCentermass(pdb,options.coord,options.hetatm,
                                         options.mass)
-        print "%s %s" % (pdb_file,"".join(center))
+        print("%s %s" % (pdb_file,"".join(center)))
 
         # If the user wants re-centered coordinates, write them out
         if options.coord:

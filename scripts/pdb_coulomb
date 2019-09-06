@@ -62,12 +62,12 @@ def main():
 
     # create dictionary of option values where values are in lists
     value_dict = dict([(k,[options.__dict__[k]])
-                       for k in options.__dict__.keys() if k != "titrate"])
+                       for k in list(options.__dict__.keys()) if k != "titrate"])
 
     # Deal with whether the user has specified a text file containing values
     # over which to titrate.
     if options.titrate != (None,None):
-        available_options = value_dict.keys()
+        available_options = list(value_dict.keys())
 
         # Make sure that the specified option can titrate and the file exists.
         titration = options.titrate[0]
@@ -90,20 +90,20 @@ def main():
 
                 # Do some basic error checking
                 except ValueError:
-                    print "Data file \"%s\" has mangled data!" % data_file
+                    print("Data file \"%s\" has mangled data!" % data_file)
                     sys.exit()
 
                 if len(titr) == 0:
-                    print "Data file \"%s\" is empty!" % data_file
+                    print("Data file \"%s\" is empty!" % data_file)
                     sys.exit()
             else:
-                print "Data file \"%s\" does not exist!" % data_file
+                print("Data file \"%s\" does not exist!" % data_file)
                 sys.exit()
         else:
-            print "\"%s\" cannot be titrated!" % titration
-            print "Available titrations:"
+            print("\"%s\" cannot be titrated!" % titration)
+            print("Available titrations:")
             for option in available_options:
-                print "\t%s" % option
+                print("\t%s" % option)
             sys.exit()
 
 
@@ -132,7 +132,7 @@ def main():
                                     pH,temperature,energy))
                         counter += 1
 
-    print "".join(out)
+    print("".join(out))
 
 if __name__ == "__main__":
     main()

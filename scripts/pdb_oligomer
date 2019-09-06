@@ -52,7 +52,7 @@ def main():
     out = ["%i\t%s\n" % (i,l) for i, l in enumerate(out)]
     out.insert(0,"\tpdb\tcompounds\tchains\tWYSIWYG\n")
 
-    print "".join(out)
+    print("".join(out))
 
 
 # If run from command line...

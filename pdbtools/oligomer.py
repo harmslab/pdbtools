@@ -109,10 +109,10 @@ def findAllChains(pdb):
 
     # grab chains from HETATM entries (if they were not listed in the COMPND
     # section)
-    known_chains = chain_dict.keys()
+    known_chains = list(chain_dict.keys())
     hetatm = [l for l in pdb if l[0:6] == "HETATM"]
     hetatm_chains = dict([(l[21],l[17:20]) for l in hetatm])
-    for k in hetatm_chains.keys():
+    for k in list(hetatm_chains.keys()):
         if k not in known_chains:
             chain_dict[k] = hetatm_chains[k]
 
@@ -138,7 +138,7 @@ def pdbOligomer(pdb,collapse_repeat=True):
     # the system as non wysiwg, but will allow chains, etc. to be parsed for
     # output
     if biomat == ():
-        keys = chain_dict.keys()
+        keys = list(chain_dict.keys())
         keys.sort()
         biomat = [[keys,(False,False)]]
 

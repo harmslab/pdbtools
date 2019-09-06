@@ -59,7 +59,7 @@ def main():
 
     file_list, options = cmdline.parseCommandLine()
 
-    print "Generating standards."
+    print("Generating standards.")
     standards = sasa.readStandards(options.standard_dir,options.probe_radius,
                               options.z_sample,options.vdw_file)
 

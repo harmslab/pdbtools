@@ -69,8 +69,8 @@ def convertResidues(pdb,atom_conv={},resid_conv={},atom_skip=[],resid_skip=[]):
     states and give every group a charge.
     """
 
-    atom_to_convert = atom_conv.keys()
-    res_to_convert = resid_conv.keys()
+    atom_to_convert = list(atom_conv.keys())
+    res_to_convert = list(resid_conv.keys())
 
     new_pdb = []
     for line in pdb:
@@ -181,7 +181,7 @@ def flipAtoms(pdb):
 
     flip = {"ASP":("OD1","OD2"),
             "GLU":("OE1","OE2")}
-    flip_keys = flip.keys()
+    flip_keys = list(flip.keys())
 
     for index, line in enumerate(pdb):
         res = line[17:30]

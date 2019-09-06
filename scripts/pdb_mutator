@@ -75,7 +75,7 @@ def main():
         pdb = f.readlines()
         f.close()
 
-        print "Loading %s" % file
+        print("Loading %s" % file)
         pdb_id = file[:-4]
         pdb, mutation_string = mutator.pdbMutator(pdb,residue,mutation,chain,
                                           run_charmm)
@@ -85,7 +85,7 @@ def main():
         g.writelines(pdb)
         g.close()
 
-        print "Mutated pdb written to %s" % out_file
+        print("Mutated pdb written to %s" % out_file)
 
 if __name__ == "__main__":
     main()

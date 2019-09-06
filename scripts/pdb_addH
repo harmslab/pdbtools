@@ -92,7 +92,7 @@ def main():
         pdb_id = os.path.split(file)[-1][:-4]
         out_file = "%sH.pdb" % pdb_id
 
-        print "%s --> %s" % (file,out_file)
+        print("%s --> %s" % (file,out_file))
 
         # Load in file
         f = open(file,'r')
@@ -106,13 +106,14 @@ def main():
                               keep_temp=keep_temp,
                               calc_type=calc_type,
                               hbond=hbond)
-        except addH.PdbAddHError, (strerror):
+        except addH.PdbAddHError as xxx_todo_changeme:
+            (strerror) = xxx_todo_changeme
             err = "Addition of hydrogens failed for %s\n" % file
             err += "Problem was with CHARMM\n.%s" % strerror
-            print err
+            print(err)
 
             if options.skip:
-                print "CHARMM output written to error.log"
+                print("CHARMM output written to error.log")
                 g = open("error.log","a")
                 g.write(err)
                 g.write("charmm.out copied below\n%s\n" % (79*"-"))

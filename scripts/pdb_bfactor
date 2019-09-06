@@ -74,7 +74,7 @@ def main():
 
         out = bfactor.pdbBfactor(pdb,data_dict)
 
-        print "".join(out)
+        print("".join(out))
 
 if __name__ == "__main__":
     main()

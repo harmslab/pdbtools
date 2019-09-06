@@ -43,7 +43,7 @@ def main():
     # If we are calculating a difference map, calculate this first.
     if options.difference != None:
         if not os.path.isfile(options.difference):
-            print "\"%s\" is not a file!" % options.difference
+            print("\"%s\" is not a file!" % options.difference)
             sys.exit()
 
         f = open(options.difference,'r')
@@ -64,8 +64,8 @@ def main():
         # Make sure the difference and main pdbs have the same number of atoms
         if options.difference != None:
             if len(dist) != len(to_compare):
-                print "\"%s\" and \"%s\" do not have same number of atoms!" % \
-                    (pdb_file,options.difference)
+                print("\"%s\" and \"%s\" do not have same number of atoms!" % \
+                    (pdb_file,options.difference))
                 sys.exit()
 
         # Write output

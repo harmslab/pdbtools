@@ -42,7 +42,7 @@ def pdbContacting(pdb,target,cutoff,target_type="resname"):
                 contacts.append(a[0][5:].strip())
 
         # Grab only unique contacts
-        contacts = dict([(c,()) for c in contacts]).keys()
+        contacts = list(dict([(c,()) for c in contacts]).keys())
         out.append("%s\t%s\n" % (t[0],("\t".join(contacts))))
 
     return out 

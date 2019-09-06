@@ -36,9 +36,9 @@ def calcDistances(coord):
 
     num_points = len(coord)
     d = [[0. for j in range(num_points)] for i in range(num_points)]
-    for i in xrange(num_points):
+    for i in range(num_points):
         d[i][i] = 0.
-        for j in xrange(i+1,num_points):
+        for j in range(i+1,num_points):
             d[i][j] = dist(coord[i],coord[j])
             d[j][i] = d[i][j]
 

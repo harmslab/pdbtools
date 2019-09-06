@@ -49,23 +49,23 @@ def main():
         # total histogram to take the new data
         if len(tmp_hist[0]) > len(histogram[0]):
             diff = len(tmp_hist[0]) - len(histogram[0])
-            for i in xrange(3):
-                histogram[i].extend([0 for j in xrange(diff)])
+            for i in range(3):
+                histogram[i].extend([0 for j in range(diff)])
 
         # Take data from temporary histogram and append to total histogram
-        for i in xrange(len(tmp_hist[0])):
-            for j in xrange(3):
+        for i in range(len(tmp_hist[0])):
+            for j in range(3):
                 histogram[j][i] += tmp_hist[j][i]
 
     # Create pretty output
     out = ["%10s%10s%10s%10s%10s\n" % (" ","dist","a-a","a-b","b-b")]
-    for i in xrange(len(histogram[0])):
+    for i in range(len(histogram[0])):
         step = options.step*i
         out.append("%10i%10.3F%10i%10i%10i\n" %
                    (i,step,histogram[0][i],histogram[1][i],histogram[2][i]))
 
 
-    print "".join(out)
+    print("".join(out))
 
 
 

@@ -52,7 +52,7 @@ def main():
 
         sequence = seq.pdbSeq2Fasta(pdb,pdb_id,options.chain,options.atomseq)
 
-        print sequence
+        print(sequence)
 
 
 

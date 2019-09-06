@@ -13,7 +13,7 @@ __author__ = "Michael J. Harms"
 __date__ = "080418"
 
 import math, os
-import gen_input
+from . import gen_input
 
 # Set up charmm binary
 try:
@@ -66,7 +66,7 @@ def runCharmm(input):
         err = "charmm binary \"%s\" does not exist!" % charmm_bin
         raise CharmmInterfaceError(err)
 
-    print "Running: %s" % (charmm_bin)
+    print("Running: %s" % (charmm_bin))
 
     cin, cout = os.popen2(charmm_bin)
     cin.write(input)
@@ -90,7 +90,7 @@ def charmm2pdb(charmm_output):
 
     # Rename oddball residues
     rename_dict = {"OCT1":" O  ","OCT2":" OXT"}
-    rename_lines = [l for l in pdb if l[12:16] in rename_dict.keys()]
+    rename_lines = [l for l in pdb if l[12:16] in list(rename_dict.keys())]
     for line in rename_lines:
         index = pdb.index(line)
         new_atom = rename_dict[line[12:16]]

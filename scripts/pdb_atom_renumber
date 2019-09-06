@@ -44,7 +44,7 @@ def main():
 
         out = atom_renumber.pdbAtomRenumber(pdb,options.renumber_het)
         if len(file_list) == 1:
-            print "".join(out)
+            print("".join(out))
         else:
             out_file = "%s_renum.pdb" % pdb_file[:-4]
             g = open(out_file,'w')

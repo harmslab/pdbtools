@@ -34,7 +34,7 @@ def _readParam(param_file):
     # Fill charge and radii dictionaries keyed to aa, then atom type
     charge = dict([(x[0],[]) for x in param])
     radii  = dict([(x[0],[]) for x in param])
-    for k in charge.keys():
+    for k in list(charge.keys()):
         charge[k] = dict([(x[1],x[2]) for x in param if x[0] == k])
         radii[k]  = dict([(x[1],x[3]) for x in param if x[0] == k])
 

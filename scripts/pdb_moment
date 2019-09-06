@@ -49,12 +49,12 @@ def main():
         if len(ca) == 0:
 
             # If not in the correct format, try to add hydrogens
-            print "%s does not appear to have polar hydrogens!" % pdb_file
+            print("%s does not appear to have polar hydrogens!" % pdb_file)
             if options.addH:
 
                 import pdb_addH
 
-                print "Attempting to add hydrogens with pdb_addH.py"
+                print("Attempting to add hydrogens with pdb_addH.py")
                 try:
                     pdb = pdb_addH.pdbAddH(pdb,pdb_id=pdb_file[:-4])
 
@@ -62,20 +62,22 @@ def main():
                     g.writelines(pdb)
                     g.close()
 
-                except addH.PdbAddHError, (strerror):
-                    print "Addition of hydrogens failed for %s" % file
-                    print strerror
+                except addH.PdbAddHError as xxx_todo_changeme:
+                    (strerror) = xxx_todo_changeme
+                    print("Addition of hydrogens failed for %s" % file)
+                    print(strerror)
                     sys.exit()
             else:
-                print "Please add hydrogens to the file using pdb_addH.py"
+                print("Please add hydrogens to the file using pdb_addH.py")
                 sys.exit()
 
         # Calculate the dipole moment and write out
         try:
             moment = moment.pdbMoment(pdb)
-        except PdbMomentError, (strerror):
-            print "Problem with %s" % pdb_file
-            print strerror
+        except PdbMomentError as xxx_todo_changeme1:
+            (strerror) = xxx_todo_changeme1
+            print("Problem with %s" % pdb_file)
+            print(strerror)
             sys.exit()
         out.append("%30s" % short_pdb)
         out.append("%10.3F%10.3F%10.3F" % tuple(moment))
@@ -91,7 +93,7 @@ def main():
     out.insert(0,"%10s%30s%10s%10s%10s%10s\n" %
                (" ","pdb","x","y","z","length"))
 
-    print "".join(out)
+    print("".join(out))
 
 
 # If run from command line...

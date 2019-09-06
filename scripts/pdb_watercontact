@@ -42,11 +42,11 @@ def main():
 
         neighbors = watercontact.pdbWaterContact(pdb,options.probe)
 
-        residues = neighbors.keys()
+        residues = list(neighbors.keys())
         residues.sort()
 
         for r in residues:
-            print "\"%5s\"%10i" % (r,len(neighbors[r]))
+            print("\"%5s\"%10i" % (r,len(neighbors[r])))
 
 # If run from command line...
 if __name__ == "__main__":

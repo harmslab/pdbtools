@@ -43,7 +43,7 @@ def pdbResidueRenumber(pdb,start_res=None,renumber_het=True,remove_gaps=False,
         if line[0:6] in to_renumber:
 
             # If this is the first residue in a chain, set up counter etc.
-            if line[21] not in seen_chains.keys():
+            if line[21] not in list(seen_chains.keys()):
 
                 # If we're only looking at a specific chain (and this isn't it)
                 # don't modify th eline and move along.

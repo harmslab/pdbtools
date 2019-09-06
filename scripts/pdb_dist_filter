@@ -71,7 +71,7 @@ def main():
         # dump output to stdout
         out = ["%10i%10.3F\n" % (i,d) for i, d in enumerate(dist)]
         out.insert(0,"%10s%10s\n" % (" ","dist"))
-        print "".join(out)
+        print("".join(out))
 
 # Parse command line if called from command line
 if __name__ == "__main__":

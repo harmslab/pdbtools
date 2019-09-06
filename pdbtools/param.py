@@ -22,7 +22,8 @@ __date__ = "080125"
 
 
 import os, sys
-import .seq
+from . import seq
+from . import data
 from .data.common import *
 
 class PdbParamError(Exception):
@@ -37,7 +38,7 @@ def calcChargeState(count_dict,pH):
     """
 
     charge_state = 0.
-    for aa in count_dict.keys():
+    for aa in list(count_dict.keys()):
         pKa = PKA_DICT[aa]
         charge = CHARGE_DICT[aa]
         charge_state += count_dict[aa]*charge/(1 + 10**(charge*(pH-pKa)))
@@ -51,8 +52,8 @@ def pdbPi(aa_list,initial_pH_step=2.0,cutoff=0.001):
     """
 
     # Count the number of titratable amino acids in a sequence
-    count_dict = dict([(k,0) for k in PKA_DICT.keys()])
-    for k in count_dict.keys():
+    count_dict = dict([(k,0) for k in list(PKA_DICT.keys())])
+    for k in list(count_dict.keys()):
         count_dict[k] = len([aa for aa in aa_list if aa == k])
     count_dict["NTERM"] = 1
     count_dict["CTERM"] = 1
@@ -107,18 +108,18 @@ def pdbParam(pdb,chain="all",use_atoms=False):
     # Convert chain dictionary to list of amino acids
     if chain == "all":
         aa_list = []
-        for c in chain_dict.keys():
+        for c in list(chain_dict.keys()):
             aa_list.extend(chain_dict[c])
     else:
-        if chain in chain_dict.keys():
+        if chain in list(chain_dict.keys()):
             aa_list = chain_dict[chain]
         else:
             err = "Chain \"%s\" is not in pdb file!" % chain
             raise PdbParamError(err)
 
     # Count number of each type of group
-    count_dict = dict([(k,0) for k in MW_DICT.keys()])
-    for k in count_dict.keys():
+    count_dict = dict([(k,0) for k in list(MW_DICT.keys())])
+    for k in list(count_dict.keys()):
         count_dict[k] = len([aa for aa in aa_list if aa == k])
 
     # Calculate molecular weight and pI

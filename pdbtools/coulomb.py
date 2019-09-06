@@ -33,7 +33,7 @@ def readPDB(pdb_file):
 
     # Grab only ATOM entries that are titratable
     pdb = [l for l in pdb if l[0:4] == "ATOM" and
-                             l[17:20] in TITR_ATOM.keys() and
+                             l[17:20] in list(TITR_ATOM.keys()) and
                              l[13:16] == TITR_ATOM[l[17:20]]]
 
     # Initalize lists to hold coordinates, pkas, and charge

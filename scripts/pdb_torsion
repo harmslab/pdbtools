@@ -47,7 +47,7 @@ def main():
 
     header = "%10s%30s%4s%8s%10s%10s\n" % (" ","pdb","aa","res","phi","psi")
     out.insert(0,header)
-    print "".join(out)
+    print("".join(out))
 
 
 if __name__ == "__main__":
