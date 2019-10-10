@@ -26,11 +26,13 @@ def unZip(some_file,some_output):
     Unzip some_file using the gzip library and write to some_output.
     """
 
-    f = gzip.open(some_file,'r')
-    g = open(some_output,'w')
-    g.writelines(f.readlines())
-    f.close()
+    g = open(some_output,'wb')
+    with gzip.open(some_file,'rb') as f:
+        g.write(f.read()) #.decode("utf-8"))
     g.close()
+    #g.writelines(f.readlines())
+    #f.close()
+    #g.close()
 
     os.remove(some_file)
 

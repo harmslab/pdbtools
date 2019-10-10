@@ -42,11 +42,11 @@ def pdbTorsion(pdb):
                 if current_residue != line[17:26]:
 
                     try:
-                        N.append([float(resid_contents["N  "][30+8*i:39+8*i])
+                        N.append([float(resid_contents["N  "][30+8*i:38+8*i])
                                   for i in range(3)])
-                        CO.append([float(resid_contents["C  "][30+8*i:39+8*i])
+                        CO.append([float(resid_contents["C  "][30+8*i:38+8*i])
                                    for i in range(3)])
-                        CA.append([float(resid_contents["CA "][30+8*i:39+8*i])
+                        CA.append([float(resid_contents["CA "][30+8*i:38+8*i])
                                    for i in range(3)])
                         residue_list.append(current_residue)
 
@@ -68,11 +68,11 @@ def pdbTorsion(pdb):
 
     # Record the last residue
     try:
-        N.append([float(resid_contents["N  "][30+8*i:39+8*i])
+        N.append([float(resid_contents["N  "][30+8*i:38+8*i])
                   for i in range(3)])
-        CO.append([float(resid_contents["C  "][30+8*i:39+8*i])
+        CO.append([float(resid_contents["C  "][30+8*i:38+8*i])
                    for i in range(3)])
-        CA.append([float(resid_contents["CA "][30+8*i:39+8*i])
+        CA.append([float(resid_contents["CA "][30+8*i:38+8*i])
                    for i in range(3)])
         residue_list.append(current_residue)
 

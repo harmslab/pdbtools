@@ -14,7 +14,8 @@ from math import sqrt
 from .helper import container, cmdline, geometry
 from .atom_renumber import pdbAtomRenumber
 from .disulfide import pdbDisulfide
-from .charmm import interface
+#from .charmm import interface
+### HACK HACK HACK
 
 class PdbAddHError(Exception):
     """

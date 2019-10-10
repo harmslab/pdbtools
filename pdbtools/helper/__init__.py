@@ -2,5 +2,6 @@
 # This program is distributed under General Public License v. 3.  See the file
 # COPYING for a copy of the license.  
 
-__all__ = ["cmdline.py","container.py","geometry.py"]
+#__all__ = ["cmdline.py","container.py","geometry.py"]
 
+from . import cmdline, container, geometry
